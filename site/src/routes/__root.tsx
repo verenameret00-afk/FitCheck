@@ -65,7 +65,7 @@ function RootDocument({ children }: { children: ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className="bg-[#fafbf8] text-[#1a1a1a] antialiased">
+      <body className="bg-[#fdfbf7] text-[#1a1a1a] antialiased">
         {children}
         <Scripts />
       </body>

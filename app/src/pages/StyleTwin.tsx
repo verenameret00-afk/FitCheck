@@ -50,7 +50,7 @@ const DEMO_MATCHES: TwinMatch[] = [
     },
     matchPercentage: 68,
     sharedItems: 6,
-    topColor: "#8a9a5b",
+    topColor: "#5c6b3c",
   },
 ];
 

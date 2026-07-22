@@ -25,7 +25,7 @@
 
   /* Custom selection color */
   ::selection {
-    background-color: rgba(138, 154, 91, 0.2);
+    background-color: rgba(92, 107, 60, 0.2);
     color: #1a1a1a;
   }
 }

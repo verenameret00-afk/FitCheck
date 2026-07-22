@@ -18,7 +18,7 @@ function Home() {
   }
 
   return (
-    <div className="flex min-h-dvh flex-col bg-[#fafbf8] text-[#1a1a1a]">
+    <div className="flex min-h-dvh flex-col bg-[#fdfbf7] text-[#1a1a1a]">
       {/* Toast */}
       {toast && (
         <div className="fixed left-1/2 top-6 z-50 -translate-x-1/2 animate-slide-down rounded-xl bg-white px-6 py-4 text-sm font-medium text-[#1a1a1a] shadow-lg ring-1 ring-[#e8e8e3]">
@@ -27,17 +27,17 @@ function Home() {
       )}
 
       {/* ── NAV ── */}
-      <nav className="sticky top-0 z-40 border-b border-[#e8e8e3] bg-[#fafbf8]/90 backdrop-blur-xl">
+      <nav className="sticky top-0 z-40 border-b border-[#e8e8e3] bg-[#fdfbf7]/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <a href="#" className="flex items-center gap-2 text-xl font-extrabold tracking-tight text-[#1a1a1a]">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#8a9a5b] text-sm font-black text-white">
+          <a href="#" className="flex items-center gap-2 text-xl font-extrabold italic tracking-tight text-[#1a1a1a]">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#5c6b3c] text-sm italic text-white" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
               A
             </span>
             Attired
           </a>
           <a
             href="#waitlist"
-            className="rounded-full bg-[#8a9a5b] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#6b7a4a]"
+            className="rounded-full bg-[#5c6b3c] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#4a5a2e]"
           >
             Get Early Access
           </a>
@@ -45,21 +45,21 @@ function Home() {
       </nav>
 
       {/* ── HERO ── */}
-      <section className="relative overflow-hidden bg-[#fafbf8] px-6 pb-20 pt-16 sm:pt-28 sm:pb-32">
+      <section className="relative overflow-hidden bg-[#fdfbf7] px-6 pb-20 pt-16 sm:pt-28 sm:pb-32">
         {/* Background glow */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#8a9a5b] opacity-[0.04] blur-[120px]" />
+          <div className="absolute -top-40 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#5c6b3c] opacity-[0.04] blur-[120px]" />
         </div>
 
         <div className="relative mx-auto max-w-4xl text-center">
-          <span className="mb-6 inline-block rounded-full border border-[#8a9a5b]/30 bg-[#8a9a5b]/10 px-4 py-1.5 text-sm font-medium text-[#8a9a5b]">
+          <span className="mb-6 inline-block rounded-full border border-[#5c6b3c]/30 bg-[#5c6b3c]/10 px-4 py-1.5 text-sm font-medium text-[#5c6b3c]">
             AI-Powered Personal Styling
           </span>
 
           <h1 className="text-5xl font-extrabold leading-[1.08] tracking-tight text-[#1a1a1a] sm:text-7xl lg:text-8xl">
             build looks
             <br />
-            <span className="bg-gradient-to-r from-[#8a9a5b] to-[#9dae6d] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#5c6b3c] to-[#7a8c52] bg-clip-text text-transparent">
               you love
             </span>
           </h1>
@@ -73,7 +73,7 @@ function Home() {
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <a
               href="#waitlist"
-              className="group inline-flex items-center gap-2 rounded-full bg-[#8a9a5b] px-8 py-4 text-lg font-semibold text-white transition hover:bg-[#6b7a4a] hover:shadow-[0_0_40px_rgba(138,154,91,0.15)]"
+              className="group inline-flex items-center gap-2 rounded-full bg-[#5c6b3c] px-8 py-4 text-lg font-semibold text-white transition hover:bg-[#4a5a2e] hover:shadow-[0_0_40px_rgba(92,107,60,0.15)]"
             >
               Try Attired Free
               <span className="transition group-hover:translate-x-0.5">→</span>
@@ -89,11 +89,11 @@ function Home() {
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section id="how-it-works" className="border-t border-[#e8e8e3] bg-[#fcfdfa] px-6 py-24 sm:py-32">
+      <section id="how-it-works" className="border-t border-[#e8e8e3] bg-[#fdfcf9] px-6 py-24 sm:py-32">
         <div className="mx-auto max-w-6xl">
           <h2 className="text-center text-3xl font-extrabold tracking-tight text-[#1a1a1a] sm:text-4xl">
             Get styled in{" "}
-            <span className="bg-gradient-to-r from-[#8a9a5b] to-[#9dae6d] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#5c6b3c] to-[#7a8c52] bg-clip-text text-transparent">
               3 steps
             </span>
           </h2>
@@ -103,8 +103,8 @@ function Home() {
 
           <div className="mt-16 grid gap-8 sm:grid-cols-3">
             {/* Step 1 */}
-            <div className="group rounded-2xl border border-[#e8e8e3] bg-white p-8 transition hover:border-[#8a9a5b]/30 hover:shadow-md">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#8a9a5b]/10 text-3xl ring-1 ring-[#8a9a5b]/20">
+            <div className="group rounded-2xl border border-[#e8e8e3] bg-white p-8 transition hover:border-[#5c6b3c]/30 hover:shadow-md">
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#5c6b3c]/10 text-3xl ring-1 ring-[#5c6b3c]/20">
                 📸
               </div>
               <h3 className="mt-6 text-xl font-bold text-[#1a1a1a]">Snap your closet</h3>
@@ -112,14 +112,14 @@ function Home() {
                 Open your wardrobe and snap photos of your tops, bottoms, dresses,
                 and shoes. Our AI catalogs everything automatically.
               </p>
-              <span className="mt-4 inline-block text-sm font-semibold text-[#8a9a5b]/50">
+              <span className="mt-4 inline-block text-sm font-semibold text-[#5c6b3c]/50">
                 01
               </span>
             </div>
 
             {/* Step 2 */}
-            <div className="group rounded-2xl border border-[#e8e8e3] bg-white p-8 transition hover:border-[#8a9a5b]/30 hover:shadow-md">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#8a9a5b]/10 text-3xl ring-1 ring-[#8a9a5b]/20">
+            <div className="group rounded-2xl border border-[#e8e8e3] bg-white p-8 transition hover:border-[#5c6b3c]/30 hover:shadow-md">
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#5c6b3c]/10 text-3xl ring-1 ring-[#5c6b3c]/20">
                 🤖
               </div>
               <h3 className="mt-6 text-xl font-bold text-[#1a1a1a]">AI analyzes your style</h3>
@@ -127,14 +127,14 @@ function Home() {
                 Our vision AI identifies each piece — color, cut, fabric, and vibe.
                 It learns your style DNA and builds a smart catalog.
               </p>
-              <span className="mt-4 inline-block text-sm font-semibold text-[#8a9a5b]/50">
+              <span className="mt-4 inline-block text-sm font-semibold text-[#5c6b3c]/50">
                 02
               </span>
             </div>
 
             {/* Step 3 */}
-            <div className="group rounded-2xl border border-[#e8e8e3] bg-white p-8 transition hover:border-[#8a9a5b]/30 hover:shadow-md">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#8a9a5b]/10 text-3xl ring-1 ring-[#8a9a5b]/20">
+            <div className="group rounded-2xl border border-[#e8e8e3] bg-white p-8 transition hover:border-[#5c6b3c]/30 hover:shadow-md">
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#5c6b3c]/10 text-3xl ring-1 ring-[#5c6b3c]/20">
                 ✨
               </div>
               <h3 className="mt-6 text-xl font-bold text-[#1a1a1a]">Get outfit combos</h3>
@@ -142,7 +142,7 @@ function Home() {
                 Pick an occasion — date night, brunch, interview — and get 3-5 styled
                 looks from your own clothes. Ready to wear, ready to share.
               </p>
-              <span className="mt-4 inline-block text-sm font-semibold text-[#8a9a5b]/50">
+              <span className="mt-4 inline-block text-sm font-semibold text-[#5c6b3c]/50">
                 03
               </span>
             </div>
@@ -151,11 +151,11 @@ function Home() {
       </section>
 
       {/* ── FEATURES ── */}
-      <section className="border-t border-[#e8e8e3] bg-[#fafbf8] px-6 py-24 sm:py-32">
+      <section className="border-t border-[#e8e8e3] bg-[#fdfbf7] px-6 py-24 sm:py-32">
         <div className="mx-auto max-w-6xl">
           <h2 className="text-center text-3xl font-extrabold tracking-tight text-[#1a1a1a] sm:text-4xl">
             Built for the{" "}
-            <span className="bg-gradient-to-r from-[#8a9a5b] to-[#9dae6d] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#5c6b3c] to-[#7a8c52] bg-clip-text text-transparent">
               GRWM generation
             </span>
           </h2>
@@ -177,13 +177,13 @@ function Home() {
               {/* Card mockup */}
               <div className="mt-8 space-y-3">
                 {[
-                  { label: "Date Night", accent: "#8a9a5b" },
-                  { label: "Brunch", accent: "#9dae6d" },
-                  { label: "Office Fit", accent: "#bcc597" },
+                  { label: "Date Night", accent: "#5c6b3c" },
+                  { label: "Brunch", accent: "#7a8c52" },
+                  { label: "Office Fit", accent: "#8fa066" },
                 ].map((card) => (
                   <div
                     key={card.label}
-                    className="flex items-center gap-3 rounded-xl border border-[#e8e8e3] bg-[#f7f9f5] p-4 transition hover:border-[#8a9a5b]/30"
+                    className="flex items-center gap-3 rounded-xl border border-[#e8e8e3] bg-[#faf8f3] p-4 transition hover:border-[#5c6b3c]/30"
                   >
                     <div
                       className="h-12 w-12 rounded-lg"
@@ -193,7 +193,7 @@ function Home() {
                       <div className="text-sm font-semibold text-[#1a1a1a]">{card.label}</div>
                       <div className="text-xs text-[#9a9a8e]">3 outfit options</div>
                     </div>
-                    <div className="ml-auto text-xs font-medium text-[#8a9a5b]">
+                    <div className="ml-auto text-xs font-medium text-[#5c6b3c]">
                       VIEW →
                     </div>
                   </div>
@@ -210,12 +210,12 @@ function Home() {
                   have similar wardrobes and body types — swap ideas, not clothes.
                 </p>
               </div>
-              <div className="mt-8 flex items-center gap-4 rounded-xl border border-[#e8e8e3] bg-[#f7f9f5] p-5">
+              <div className="mt-8 flex items-center gap-4 rounded-xl border border-[#e8e8e3] bg-[#faf8f3] p-5">
                 <div className="flex -space-x-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#8a9a5b]/15 text-sm font-bold text-[#8a9a5b] ring-2 ring-white">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#5c6b3c]/15 text-sm font-bold text-[#5c6b3c] ring-2 ring-white">
                     Y
                   </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#9dae6d]/15 text-sm font-bold text-[#9dae6d] ring-2 ring-white">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#7a8c52]/15 text-sm font-bold text-[#7a8c52] ring-2 ring-white">
                     T
                   </div>
                 </div>
@@ -236,13 +236,13 @@ function Home() {
                 </p>
               </div>
               <div className="mt-8 flex gap-3">
-                <div className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#8a9a5b] to-[#9dae6d] px-4 py-3 text-sm font-semibold text-white">
+                <div className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#5c6b3c] to-[#7a8c52] px-4 py-3 text-sm font-semibold text-white">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.5 12.5c-.667.667-1.5 1-2.5 1-.8 0-1.55-.267-2.25-.8A4.23 4.23 0 0110.5 13c-.433.3-.95.5-1.5.5-1 0-1.833-.333-2.5-1-.667-.667-1-1.5-1-2.5s.333-1.833 1-2.5C7.167 6.833 8 6.5 9 6.5s1.833.333 2.5 1c.667.667 1 1.5 1 2.5 0 .8-.267 1.55-.8 2.25.533.433 1.117.7 1.75.8L14.5 11h1l.5 3.5z" />
                   </svg>
                   Instagram
                 </div>
-                <div className="flex items-center gap-2 rounded-xl bg-[#f7f9f5] px-4 py-3 text-sm font-semibold text-[#1a1a1a] ring-1 ring-[#e8e8e3]">
+                <div className="flex items-center gap-2 rounded-xl bg-[#faf8f3] px-4 py-3 text-sm font-semibold text-[#1a1a1a] ring-1 ring-[#e8e8e3]">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.3.02.6.04.9.06.91.07 1.82.15 2.73.28 1.12.16 2.13.47 2.99 1.06.99.68 1.68 1.59 1.99 2.76.23.86.31 1.74.35 2.63.04 1.31.02 2.61.02 3.91v.06c0 1.3.02 2.61-.02 3.91-.04.89-.12 1.77-.35 2.63-.31 1.17-1 2.08-1.99 2.76-.86.59-1.87.9-2.99 1.06-.91.13-1.82.21-2.73.28-.3.02-.6.04-.9.06-1.3.03-2.6.03-3.91.02h-.06c-1.3 0-2.61-.02-3.91.02-.89-.04-1.77-.12-2.63-.35-1.17-.31-2.08-1-2.76-1.99-.59-.86-.9-1.87-1.06-2.99-.13-.91-.21-1.82-.28-2.73-.02-.3-.04-.6-.06-.9C.02 14.586.02 13.286.02 11.986v-.06c0-1.3-.02-2.61.02-3.91.04-.89.12-1.77.35-2.63.31-1.17 1-2.08 1.99-2.76.86-.59 1.87-.9 2.99-1.06.91-.13 1.82-.21 2.73-.28.3-.02.6-.04.9-.06 1.31-.03 2.61-.03 3.91-.02h.06z" />
                   </svg>
@@ -257,12 +257,12 @@ function Home() {
       {/* ── WAITLIST ── */}
       <section
         id="waitlist"
-        className="border-t border-[#e8e8e3] bg-[#fcfdfa] px-6 py-24 sm:py-32"
+        className="border-t border-[#e8e8e3] bg-[#fdfcf9] px-6 py-24 sm:py-32"
       >
         <div className="relative mx-auto max-w-2xl overflow-hidden rounded-3xl border border-[#e8e8e3] bg-white px-8 py-16 text-center sm:px-16 sm:py-20 shadow-sm">
           {/* Inner glow */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden">
-            <div className="absolute -bottom-20 left-1/2 h-[300px] w-[300px] -translate-x-1/2 rounded-full bg-[#8a9a5b] opacity-[0.03] blur-[100px]" />
+            <div className="absolute -bottom-20 left-1/2 h-[300px] w-[300px] -translate-x-1/2 rounded-full bg-[#5c6b3c] opacity-[0.03] blur-[100px]" />
           </div>
 
           <div className="relative">
@@ -281,11 +281,11 @@ function Home() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
-                className="flex-1 rounded-xl border border-[#e8e8e3] bg-[#f7f9f5] px-5 py-4 text-[#1a1a1a] placeholder-[#9a9a8e] outline-none transition focus:border-[#8a9a5b]/50 focus:ring-2 focus:ring-[#8a9a5b]/15"
+                className="flex-1 rounded-xl border border-[#e8e8e3] bg-[#faf8f3] px-5 py-4 text-[#1a1a1a] placeholder-[#9a9a8e] outline-none transition focus:border-[#5c6b3c]/50 focus:ring-2 focus:ring-[#5c6b3c]/15"
               />
               <button
                 type="submit"
-                className="rounded-xl bg-[#8a9a5b] px-8 py-4 font-semibold text-white transition hover:bg-[#6b7a4a] hover:shadow-[0_0_30px_rgba(138,154,91,0.15)]"
+                className="rounded-xl bg-[#5c6b3c] px-8 py-4 font-semibold text-white transition hover:bg-[#4a5a2e] hover:shadow-[0_0_30px_rgba(92,107,60,0.15)]"
               >
                 Notify Me
               </button>
@@ -299,10 +299,10 @@ function Home() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="border-t border-[#e8e8e3] bg-[#fafbf8] px-6 py-12">
+      <footer className="border-t border-[#e8e8e3] bg-[#fdfbf7] px-6 py-12">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 sm:flex-row">
-          <div className="flex items-center gap-2 text-lg font-extrabold tracking-tight text-[#1a1a1a]">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#8a9a5b] text-xs font-black text-white">
+          <div className="flex items-center gap-2 text-lg font-extrabold italic tracking-tight text-[#1a1a1a]">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#5c6b3c] text-xs italic text-white" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
               A
             </span>
             Attired

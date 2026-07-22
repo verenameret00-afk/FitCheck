@@ -6,7 +6,9 @@ export default function Home() {
   return (
     <div className="page home-page">
       <div className="hero">
-        <div className="logo-mark">◆</div>
+        <div className="logo-mark">
+          <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontWeight: 700 }}>A</span>
+        </div>
         <h1 className="app-name">Attired</h1>
         <p className="tagline">build looks you love</p>
         <p className="subtitle">
