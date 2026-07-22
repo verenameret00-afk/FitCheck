@@ -2,6 +2,68 @@ const OPENAI_API_KEY = Bun.env.OPENAI_API_KEY;
 
 const PORT = 3001;
 
+// ── Allowed CORS origins ─────────────────────────────────────
+
+const ALLOWED_ORIGINS = [
+  "http://localhost:5173",   // Vite dev server
+  "http://localhost:3000",   // local preview
+  "https://site-pm3hw28c3-fit-check1.vercel.app",  // Vercel deploy
+  "https://attired.ctonew.app",  // production
+];
+
+// ── Rate limiter ─────────────────────────────────────────────
+
+const RATE_LIMIT = 30;         // requests per window
+const RATE_WINDOW_MS = 60_000;  // 1 minute
+const STALE_CLEANUP_MS = 300_000; // clean up stale entries every 5 min
+
+const rateMap = new Map<
+  string,
+  { count: number; resetAt: number }
+>();
+
+let lastCleanup = Date.now();
+
+function getClientIp(req: Request): string {
+  // Check common proxy/forward headers first, fall back to no host
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    return forwarded.split(",")[0].trim();
+  }
+  const realIp = req.headers.get("x-real-ip");
+  if (realIp) return realIp.trim();
+  return "unknown";
+}
+
+function rateLimitCheck(ip: string): boolean {
+  const now = Date.now();
+
+  // Periodic cleanup of stale entries
+  if (now - lastCleanup > STALE_CLEANUP_MS) {
+    for (const [key, entry] of rateMap) {
+      if (now > entry.resetAt) {
+        rateMap.delete(key);
+      }
+    }
+    lastCleanup = now;
+  }
+
+  const entry = rateMap.get(ip);
+
+  if (!entry || now > entry.resetAt) {
+    // First request in this window (or window expired)
+    rateMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return true;
+  }
+
+  if (entry.count >= RATE_LIMIT) {
+    return false; // rate limited
+  }
+
+  entry.count++;
+  return true;
+}
+
 // ── Shared helpers ──────────────────────────────────────────
 
 function parseJsonFromContent(content: string): unknown {
@@ -23,17 +85,50 @@ const VALID_CATEGORIES = [
 
 function validCategory(c: unknown): string {
   const s = String(c || "top").toLowerCase();
-  return VALID_CATEGORIES.includes(s as typeof VALID_CATEGORIES[number]) ? s : "top";
+  return VALID_CATEGORIES.includes(s as typeof VALID_CATEGORIES[number])
+    ? s
+    : "top";
 }
 
 // ── CORS headers ────────────────────────────────────────────
 
-function corsHeaders(): Record<string, string> {
-  return {
-    "Access-Control-Allow-Origin": "*",
+function getAllowedOrigin(requestOrigin: string | null): string | null {
+  if (!requestOrigin) return null;
+  // Check exact match against allowed list
+  if (ALLOWED_ORIGINS.includes(requestOrigin)) {
+    return requestOrigin;
+  }
+  return null; // deny
+}
+
+function corsHeaders(req?: Request): Record<string, string> {
+  const headers: Record<string, string> = {
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   };
+
+  if (req) {
+    const origin = req.headers.get("origin");
+    const allowed = getAllowedOrigin(origin);
+    if (allowed) {
+      headers["Access-Control-Allow-Origin"] = allowed;
+    }
+    // If origin not in whitelist, omit the header entirely → deny
+  }
+
+  return headers;
+}
+
+// ── Input validation helpers ─────────────────────────────────
+
+const MAX_ITEMS = 50;
+const MAX_IMAGE_CHARS = 14_000_000; // ~10.5MB base64, well under 10MB decoded
+
+function validateImageDataUrl(dataUrl: unknown): string | null {
+  if (typeof dataUrl !== "string") return "imageDataUrl must be a string";
+  if (!dataUrl.startsWith("data:image/")) return "imageDataUrl must be a data:image/* URL";
+  if (dataUrl.length > MAX_IMAGE_CHARS) return "imageDataUrl exceeds maximum size (10MB)";
+  return null; // valid
 }
 
 // ── /api/analyze ────────────────────────────────────────────
@@ -65,12 +160,24 @@ async function handleAnalyze(req: Request): Promise<Response> {
     const { imageDataUrl } = (await req.json()) as { imageDataUrl?: string };
 
     if (!imageDataUrl) {
-      return Response.json({ error: "imageDataUrl required" }, { status: 400, headers: corsHeaders() });
+      return Response.json(
+        { error: "imageDataUrl required" },
+        { status: 400, headers: corsHeaders(req) },
+      );
+    }
+
+    // Validate image data URL
+    const imageError = validateImageDataUrl(imageDataUrl);
+    if (imageError) {
+      return Response.json(
+        { error: imageError },
+        { status: 400, headers: corsHeaders(req) },
+      );
     }
 
     if (!OPENAI_API_KEY) {
       console.warn("OPENAI_API_KEY not set — returning fallback analysis");
-      return Response.json(fallbackAnalysis(), { headers: corsHeaders() });
+      return Response.json(fallbackAnalysis(), { headers: corsHeaders(req) });
     }
 
     const openaiResp = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -100,8 +207,10 @@ async function handleAnalyze(req: Request): Promise<Response> {
 
     if (!openaiResp.ok) {
       const errorText = await openaiResp.text();
-      console.error(`OpenAI API error (${openaiResp.status}): ${errorText.slice(0, 200)}`);
-      return Response.json(fallbackAnalysis(), { headers: corsHeaders() });
+      console.error(
+        `OpenAI API error (${openaiResp.status}): ${errorText.slice(0, 200)}`,
+      );
+      return Response.json(fallbackAnalysis(), { headers: corsHeaders(req) });
     }
 
     const data = (await openaiResp.json()) as {
@@ -111,7 +220,7 @@ async function handleAnalyze(req: Request): Promise<Response> {
 
     if (!content) {
       console.error("OpenAI API returned empty content");
-      return Response.json(fallbackAnalysis(), { headers: corsHeaders() });
+      return Response.json(fallbackAnalysis(), { headers: corsHeaders(req) });
     }
 
     const parsed = parseJsonFromContent(content) as Record<string, unknown>;
@@ -129,11 +238,11 @@ async function handleAnalyze(req: Request): Promise<Response> {
           ? parsed.seasonality.map((s: unknown) => String(s).toLowerCase())
           : ["all"],
       },
-      { headers: corsHeaders() },
+      { headers: corsHeaders(req) },
     );
   } catch (err) {
     console.error("Analyze error:", err);
-    return Response.json(fallbackAnalysis(), { headers: corsHeaders() });
+    return Response.json(fallbackAnalysis(), { headers: corsHeaders(req) });
   }
 }
 
@@ -180,7 +289,8 @@ function fallbackOutfits(items: ItemForPrompt[], occasion: string) {
   if (items.length === 0) return [];
 
   const tops = items.filter(
-    (i) => i.category === "top" || i.category === "outerwear" || i.category === "dress",
+    (i) =>
+      i.category === "top" || i.category === "outerwear" || i.category === "dress",
   );
   const bottoms = items.filter((i) => i.category === "bottom");
   const shoes = items.filter((i) => i.category === "shoes");
@@ -195,7 +305,11 @@ function fallbackOutfits(items: ItemForPrompt[], occasion: string) {
     "wedding guest": ["elegant", "refined", "celebratory"],
   };
 
-  const moods = occasionMoods[occasion.toLowerCase()] ?? ["stylish", "put-together", "fun"];
+  const moods = occasionMoods[occasion.toLowerCase()] ?? [
+    "stylish",
+    "put-together",
+    "fun",
+  ];
 
   const names = [
     "The Statement Look",
@@ -235,7 +349,8 @@ function fallbackOutfits(items: ItemForPrompt[], occasion: string) {
         (it) => it.id === outfitIds[0] && it.category === "dress",
       )
     ) {
-      const bottom = bottoms.find((b) => !usedIds.has(b.id)) ?? bottoms[0];
+      const bottom =
+        bottoms.find((b) => !usedIds.has(b.id)) ?? bottoms[0];
       if (bottom && !usedIds.has(bottom.id)) {
         outfitIds.push(bottom.id);
         usedIds.add(bottom.id);
@@ -269,7 +384,10 @@ function fallbackOutfits(items: ItemForPrompt[], occasion: string) {
         id: `outfit-${i + 1}`,
         name: names[i % names.length],
         itemIds: outfitIds,
-        description: `${moods[i % moods.length].charAt(0).toUpperCase() + moods[i % moods.length].slice(1)} — ${descriptions[i % descriptions.length]}`,
+        description: `${
+          moods[i % moods.length].charAt(0).toUpperCase() +
+          moods[i % moods.length].slice(1)
+        } — ${descriptions[i % descriptions.length]}`,
         vibeRating: Math.min(5, 3 + Math.floor(Math.random() * 3)),
       });
     }
@@ -291,38 +409,66 @@ async function handleOutfits(req: Request): Promise<Response> {
 
     const { items = [], occasion = "casual" } = body;
 
-    if (!Array.isArray(items) || items.length === 0) {
-      return Response.json(fallbackOutfits(items, occasion), { headers: corsHeaders() });
+    // Validate items array size
+    if (!Array.isArray(items)) {
+      return Response.json(
+        { error: "items must be an array" },
+        { status: 400, headers: corsHeaders(req) },
+      );
+    }
+
+    if (items.length > MAX_ITEMS) {
+      return Response.json(
+        { error: `items array exceeds maximum of ${MAX_ITEMS} items` },
+        { status: 400, headers: corsHeaders(req) },
+      );
+    }
+
+    if (items.length === 0) {
+      return Response.json(fallbackOutfits(items, occasion), {
+        headers: corsHeaders(req),
+      });
     }
 
     if (!OPENAI_API_KEY) {
-      console.warn("OPENAI_API_KEY not set — using fallback outfit generation");
-      return Response.json(fallbackOutfits(items, occasion), { headers: corsHeaders() });
+      console.warn(
+        "OPENAI_API_KEY not set — using fallback outfit generation",
+      );
+      return Response.json(fallbackOutfits(items, occasion), {
+        headers: corsHeaders(req),
+      });
     }
 
-    const openaiResp = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
+    const openaiResp = await fetch(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "user",
+              content: buildPrompt(items, occasion),
+            },
+          ],
+          max_tokens: 1000,
+          temperature: 0.7,
+        }),
       },
-      body: JSON.stringify({
-        model: "gpt-4o",
-        messages: [
-          {
-            role: "user",
-            content: buildPrompt(items, occasion),
-          },
-        ],
-        max_tokens: 1000,
-        temperature: 0.7,
-      }),
-    });
+    );
 
     if (!openaiResp.ok) {
       const errorText = await openaiResp.text();
-      console.error(`OpenAI API error (${openaiResp.status}): ${errorText.slice(0, 200)}`);
-      return Response.json(fallbackOutfits(items, occasion), { headers: corsHeaders() });
+      console.error(
+        `OpenAI API error (${openaiResp.status}): ${errorText.slice(0, 200)}`,
+      );
+      return Response.json(fallbackOutfits(items, occasion), {
+        headers: corsHeaders(req),
+      });
     }
 
     const data = (await openaiResp.json()) as {
@@ -332,7 +478,9 @@ async function handleOutfits(req: Request): Promise<Response> {
 
     if (!content) {
       console.error("OpenAI API returned empty content");
-      return Response.json(fallbackOutfits(items, occasion), { headers: corsHeaders() });
+      return Response.json(fallbackOutfits(items, occasion), {
+        headers: corsHeaders(req),
+      });
     }
 
     const parsed = parseJsonFromContent(content);
@@ -346,30 +494,44 @@ async function handleOutfits(req: Request): Promise<Response> {
 
     const outfits = parsed.slice(0, 5).map((o: unknown) => {
       const obj = o as Record<string, unknown>;
-      const rawIds: string[] = Array.isArray(obj.itemIds) ? obj.itemIds.map(String) : [];
+      const rawIds: string[] = Array.isArray(obj.itemIds)
+        ? obj.itemIds.map(String)
+        : [];
       const filteredIds = rawIds.filter((id) => validIds.has(id));
 
       return {
         id: `outfit-${idCounter++}`,
         name: String(obj.name || `Look ${idCounter - 1}`),
-        itemIds: filteredIds.length > 0 ? filteredIds : items.slice(0, 2).map((i) => i.id),
-        description: String(obj.description || `A great combination for ${occasion}.`),
-        vibeRating: Math.min(5, Math.max(1, Math.round(Number(obj.vibeRating) || 4))),
+        itemIds:
+          filteredIds.length > 0
+            ? filteredIds
+            : items.slice(0, 2).map((i) => i.id),
+        description: String(
+          obj.description || `A great combination for ${occasion}.`,
+        ),
+        vibeRating: Math.min(
+          5,
+          Math.max(1, Math.round(Number(obj.vibeRating) || 4)),
+        ),
         occasion,
       };
     });
 
-    return Response.json(outfits, { headers: corsHeaders() });
+    return Response.json(outfits, { headers: corsHeaders(req) });
   } catch (err) {
     console.error("Outfits error:", err);
     // Try to extract items from the request for fallback
     try {
-      const body = (await req.clone().json()) as { items?: ItemForPrompt[]; occasion?: string };
-      return Response.json(fallbackOutfits(body.items ?? [], body.occasion ?? "casual"), {
-        headers: corsHeaders(),
-      });
+      const body = (await req.clone().json()) as {
+        items?: ItemForPrompt[];
+        occasion?: string;
+      };
+      return Response.json(
+        fallbackOutfits(body.items ?? [], body.occasion ?? "casual"),
+        { headers: corsHeaders(req) },
+      );
     } catch {
-      return Response.json([], { headers: corsHeaders() });
+      return Response.json([], { headers: corsHeaders(req) });
     }
   }
 }
@@ -379,9 +541,18 @@ async function handleOutfits(req: Request): Promise<Response> {
 async function handleRequest(req: Request): Promise<Response> {
   const url = new URL(req.url);
 
+  // ── Rate limiting (applies to all requests) ──
+  const ip = getClientIp(req);
+  if (!rateLimitCheck(ip)) {
+    return Response.json(
+      { error: "Rate limit exceeded. Try again shortly." },
+      { status: 429, headers: corsHeaders(req) },
+    );
+  }
+
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers: corsHeaders() });
+    return new Response(null, { status: 204, headers: corsHeaders(req) });
   }
 
   if (req.method === "POST" && url.pathname === "/api/analyze") {
@@ -392,7 +563,10 @@ async function handleRequest(req: Request): Promise<Response> {
     return handleOutfits(req);
   }
 
-  return Response.json({ error: "Not found" }, { status: 404, headers: corsHeaders() });
+  return Response.json(
+    { error: "Not found" },
+    { status: 404, headers: corsHeaders(req) },
+  );
 }
 
 // ── Start server ────────────────────────────────────────────
@@ -400,6 +574,7 @@ async function handleRequest(req: Request): Promise<Response> {
 console.log(`API server starting on http://localhost:${PORT}`);
 Bun.serve({
   port: PORT,
+  maxRequestBodySize: 10 * 1024 * 1024, // 10MB body size limit
   fetch: handleRequest,
 });
 console.log(`API server listening on http://localhost:${PORT}`);
