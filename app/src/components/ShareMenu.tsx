@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import type { OutfitSuggestion } from "../lib/outfits";
+import SendToTwinModal from "./SendToTwinModal";
 
 export interface ShareMenuProps {
   isOpen: boolean;
@@ -9,7 +10,7 @@ export interface ShareMenuProps {
   outfit: OutfitSuggestion;
 }
 
-type ShareOptionKey = "instagram" | "tiktok" | "download" | "copy" | "native";
+type ShareOptionKey = "instagram" | "tiktok" | "download" | "copy" | "native" | "styletwin";
 
 interface ShareOption {
   key: ShareOptionKey;
@@ -23,6 +24,7 @@ const SHARE_OPTIONS: ShareOption[] = [
   { key: "native", label: "Share", emoji: "📤", mobileOnly: true },
   { key: "instagram", label: "Instagram", emoji: "📸", mobileOnly: true },
   { key: "tiktok", label: "TikTok", emoji: "🎵", mobileOnly: true },
+  { key: "styletwin", label: "Style Twin", emoji: "👯" },
   { key: "download", label: "Download", emoji: "💾" },
   { key: "copy", label: "Copy Caption", emoji: "📋" },
 ];
@@ -78,6 +80,7 @@ export default function ShareMenu({
 }: ShareMenuProps) {
   const [isExporting, setIsExporting] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [showTwinModal, setShowTwinModal] = useState(false);
   const isMobile = isMobileDevice();
 
   // Clear toast after 2s
@@ -91,11 +94,17 @@ export default function ShareMenu({
   useEffect(() => {
     if (!isOpen) return;
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        if (showTwinModal) {
+          setShowTwinModal(false);
+        } else {
+          onClose();
+        }
+      }
     };
     document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, showTwinModal]);
 
   const exportAndGetPng = useCallback(async (): Promise<string | null> => {
     if (isExporting) return null;
@@ -114,15 +123,11 @@ export default function ShareMenu({
     const dataUrl = await exportAndGetPng();
     if (!dataUrl) return;
 
-    // Try Instagram Stories URL scheme
     if (isMobile) {
-      // Instagram Stories requires a specific format: background image as sticker
-      // We open Instagram and instruct the user
       const instagramUrl = "instagram-stories://share";
       const opened = window.open(instagramUrl, "_blank");
 
       if (!opened) {
-        // Fallback: download the image with instructions
         downloadPng(
           dataUrl,
           `attired-${outfit.name.toLowerCase().replace(/\s+/g, "-")}.png`,
@@ -132,7 +137,6 @@ export default function ShareMenu({
         setToast("📸 Opening Instagram Stories...");
       }
     } else {
-      // Desktop: download
       downloadPng(
         dataUrl,
         `attired-${outfit.name.toLowerCase().replace(/\s+/g, "-")}.png`,
@@ -147,14 +151,12 @@ export default function ShareMenu({
     const dataUrl = await exportAndGetPng();
     if (!dataUrl) return;
 
-    // Download the image and copy caption
     downloadPng(
       dataUrl,
       `attired-${outfit.name.toLowerCase().replace(/\s+/g, "-")}.png`,
     );
 
     if (isMobile) {
-      // Try to open TikTok
       const tiktokUrl = "tiktok://";
       const opened = window.open(tiktokUrl, "_blank");
       if (!opened) {
@@ -163,7 +165,6 @@ export default function ShareMenu({
         setToast("🎵 Opening TikTok... image saved!");
       }
 
-      // Also copy caption for TikTok
       const caption = generateShareCaption(outfit);
       try {
         await navigator.clipboard.writeText(caption);
@@ -176,6 +177,10 @@ export default function ShareMenu({
 
     onClose();
   }, [exportAndGetPng, isMobile, outfit, onClose]);
+
+  const handleStyleTwin = useCallback(() => {
+    setShowTwinModal(true);
+  }, []);
 
   const handleDownload = useCallback(async () => {
     const dataUrl = await exportAndGetPng();
@@ -195,7 +200,6 @@ export default function ShareMenu({
       await navigator.clipboard.writeText(caption);
       setToast("📋 Caption copied to clipboard!");
     } catch {
-      // Fallback: show the text for manual copy
       setToast("📋 Copy this: " + caption.slice(0, 50) + "...");
     }
     onClose();
@@ -208,7 +212,6 @@ export default function ShareMenu({
       return;
     }
 
-    // Convert data URL to a Blob for sharing
     try {
       const response = await fetch(dataUrl);
       const blob = await response.blob();
@@ -224,9 +227,7 @@ export default function ShareMenu({
         files: [file],
       });
     } catch (err) {
-      // User cancelled or sharing not supported with files
       if ((err as Error)?.name !== "AbortError") {
-        // Fallback: share text only
         try {
           await navigator.share({
             title: `Attired — ${outfit.name}`,
@@ -258,16 +259,18 @@ export default function ShareMenu({
         case "native":
           handleNativeShare();
           break;
+        case "styletwin":
+          handleStyleTwin();
+          break;
       }
     },
-    [handleInstagram, handleTikTok, handleDownload, handleCopyCaption, handleNativeShare],
+    [handleInstagram, handleTikTok, handleDownload, handleCopyCaption, handleNativeShare, handleStyleTwin],
   );
 
   // Filter options based on platform
   const visibleOptions = SHARE_OPTIONS.filter((opt) => {
     if (opt.mobileOnly && !isMobile) return false;
     if (opt.desktopOnly && isMobile) return false;
-    // Only show native share if Web Share API is available
     if (opt.key === "native" && typeof navigator?.share !== "function") return false;
     return true;
   });
@@ -277,7 +280,13 @@ export default function ShareMenu({
   return (
     <>
       {/* Backdrop */}
-      <div className="share-backdrop" onClick={onClose} />
+      <div className="share-backdrop" onClick={() => {
+        if (showTwinModal) {
+          setShowTwinModal(false);
+        } else {
+          onClose();
+        }
+      }} />
 
       {/* Bottom Sheet */}
       <div className={`share-sheet ${isOpen ? "share-sheet--open" : ""}`}>
@@ -302,7 +311,7 @@ export default function ShareMenu({
           {visibleOptions.map((opt) => (
             <button
               key={opt.key}
-              className="share-option"
+              className={`share-option ${opt.key === "styletwin" ? "share-option--twin" : ""}`}
               onClick={() => handleOption(opt.key)}
               disabled={isExporting}
             >
@@ -317,6 +326,13 @@ export default function ShareMenu({
           Cancel
         </button>
       </div>
+
+      {/* Send to Twin Modal */}
+      <SendToTwinModal
+        isOpen={showTwinModal}
+        onClose={() => setShowTwinModal(false)}
+        outfitName={outfit.name}
+      />
 
       {/* Toast */}
       {toast && <div className="share-toast">{toast}</div>}

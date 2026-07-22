@@ -26,6 +26,10 @@ export default function BottomNav() {
         <span className="nav-icon nav-icon-emoji">👯</span>
         <span className="nav-label">Twin</span>
       </NavLink>
+      <NavLink to="/community" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
+        <span className="nav-icon nav-icon-emoji">💬</span>
+        <span className="nav-label">Comm</span>
+      </NavLink>
       <NavLink to="/profile" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
         <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
