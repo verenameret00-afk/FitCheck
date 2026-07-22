@@ -1,15 +1,6 @@
 const OPENAI_API_KEY = Bun.env.OPENAI_API_KEY;
-const STRIPE_SECRET_KEY = Bun.env.STRIPE_SECRET_KEY;
 
 const PORT = 3001;
-
-const STRIPE_PRICE_ID = "price_1Tw0aoDRIgJ12NLHgzxmf60A";
-const SUCCESS_URL_BASE = "https://fitcheck.ctonew.app/success";
-const CANCEL_URL = "https://fitcheck.ctonew.app/profile";
-
-function hasStripeKey(): boolean {
-  return Boolean(STRIPE_SECRET_KEY && !STRIPE_SECRET_KEY.startsWith("sk_placeholder"));
-}
 
 // ── Shared helpers ──────────────────────────────────────────
 
@@ -383,102 +374,6 @@ async function handleOutfits(req: Request): Promise<Response> {
   }
 }
 
-// ── /api/create-checkout ────────────────────────────────────
-
-async function handleCreateCheckout(req: Request): Promise<Response> {
-  try {
-    if (!hasStripeKey()) {
-      console.warn("STRIPE_SECRET_KEY not configured — returning fallback");
-      return Response.json(
-        { error: "stripe_not_configured", fallback: true },
-        { status: 503, headers: corsHeaders() },
-      );
-    }
-
-    const stripeResp = await fetch("https://api.stripe.com/v1/checkout/sessions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${STRIPE_SECRET_KEY}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        "line_items[0][price]": STRIPE_PRICE_ID,
-        "line_items[0][quantity]": "1",
-        "mode": "payment",
-        "success_url": `${SUCCESS_URL_BASE}?session_id={CHECKOUT_SESSION_ID}`,
-        "cancel_url": CANCEL_URL,
-      }).toString(),
-    });
-
-    if (!stripeResp.ok) {
-      const errorText = await stripeResp.text();
-      console.error(`Stripe create session error (${stripeResp.status}): ${errorText.slice(0, 300)}`);
-      return Response.json(
-        { error: "stripe_error", message: "Could not create checkout session" },
-        { status: 502, headers: corsHeaders() },
-      );
-    }
-
-    const session = (await stripeResp.json()) as { url?: string; id?: string };
-    return Response.json({ url: session.url, sessionId: session.id }, { headers: corsHeaders() });
-  } catch (err) {
-    console.error("Create checkout error:", err);
-    return Response.json(
-      { error: "server_error", message: "Internal server error" },
-      { status: 500, headers: corsHeaders() },
-    );
-  }
-}
-
-// ── /api/verify-payment ─────────────────────────────────────
-
-async function handleVerifyPayment(req: Request): Promise<Response> {
-  try {
-    const url = new URL(req.url);
-    const sessionId = url.searchParams.get("session_id");
-
-    if (!sessionId) {
-      return Response.json({ paid: false, error: "Missing session_id" }, { status: 400, headers: corsHeaders() });
-    }
-
-    if (!hasStripeKey()) {
-      // When Stripe isn't configured, allow test unlock via a magic session ID
-      if (sessionId === "test_unlock") {
-        return Response.json({ paid: true, test: true }, { headers: corsHeaders() });
-      }
-      return Response.json({ paid: false, error: "stripe_not_configured" }, { headers: corsHeaders() });
-    }
-
-    const stripeResp = await fetch(
-      `https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(sessionId)}`,
-      {
-        headers: {
-          Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
-        },
-      },
-    );
-
-    if (!stripeResp.ok) {
-      const errorText = await stripeResp.text();
-      console.error(`Stripe verify error (${stripeResp.status}): ${errorText.slice(0, 200)}`);
-      return Response.json({ paid: false, error: "Session lookup failed" }, { headers: corsHeaders() });
-    }
-
-    const session = (await stripeResp.json()) as {
-      payment_status?: string;
-      status?: string;
-    };
-
-    const isPaid =
-      session.payment_status === "paid" && session.status === "complete";
-
-    return Response.json({ paid: isPaid }, { headers: corsHeaders() });
-  } catch (err) {
-    console.error("Verify payment error:", err);
-    return Response.json({ paid: false, error: "Internal server error" }, { status: 500, headers: corsHeaders() });
-  }
-}
-
 // ── Router ──────────────────────────────────────────────────
 
 async function handleRequest(req: Request): Promise<Response> {
@@ -495,14 +390,6 @@ async function handleRequest(req: Request): Promise<Response> {
 
   if (req.method === "POST" && url.pathname === "/api/outfits") {
     return handleOutfits(req);
-  }
-
-  if (req.method === "POST" && url.pathname === "/api/create-checkout") {
-    return handleCreateCheckout(req);
-  }
-
-  if (req.method === "GET" && url.pathname === "/api/verify-payment") {
-    return handleVerifyPayment(req);
   }
 
   return Response.json({ error: "Not found" }, { status: 404, headers: corsHeaders() });

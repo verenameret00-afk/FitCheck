@@ -2406,3 +2406,125 @@ h1, h2, h3, h4, h5, h6,
 .success-link:hover {
   color: var(--accent);
 }
+
+/* ── Success Page — Self-Claim Form ── */
+.success-form {
+  width: 100%;
+  max-width: 300px;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.success-label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: left;
+}
+
+.success-input-wrap {
+  display: flex;
+  align-items: center;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.success-input-wrap:focus-within {
+  border-color: var(--accent);
+}
+
+.success-input-dollar {
+  padding: 0 0 0 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+.success-input {
+  flex: 1;
+  padding: 14px 16px 14px 4px;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: "Inter", sans-serif;
+  outline: none;
+}
+
+.success-input::placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.success-error {
+  font-size: 0.8rem;
+  color: #c97a6a;
+  text-align: left;
+  margin: 0;
+}
+
+.success-cta:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.success-cta:disabled:hover {
+  background: var(--accent);
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── Paywall "Already paid" link ── */
+.paywall-complete-link {
+  background: none;
+  border: none;
+  color: var(--accent-secondary);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px;
+  margin-bottom: 6px;
+  transition: color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.paywall-complete-link:hover {
+  color: var(--accent);
+}
+
+/* ── Profile "Already paid" hint ── */
+.profile-complete-hint {
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.profile-complete-link {
+  background: none;
+  border: none;
+  color: var(--accent-secondary);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.profile-complete-link:hover {
+  color: var(--accent);
+}

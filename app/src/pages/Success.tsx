@@ -1,54 +1,84 @@
-import { useEffect, useState, useCallback } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import { unlockPremium } from "../lib/usage";
+import { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { unlockPremium, isPremium } from "../lib/usage";
 
-type VerifyState = "loading" | "success" | "failure";
+type VerifyState = "form" | "success";
 
 export default function Success() {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [state, setState] = useState<VerifyState>("loading");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [state, setState] = useState<VerifyState>(
+    isPremium() ? "success" : "form",
+  );
+  const [amount, setAmount] = useState("");
+  const [error, setError] = useState("");
 
-  const sessionId = searchParams.get("session_id") || "";
+  const isValid = amount.trim() === "29.99";
 
-  const verifyPayment = useCallback(async () => {
-    if (!sessionId) {
-      setState("failure");
-      setErrorMessage("No session ID found. Please contact support.");
+  const handleUnlock = useCallback(() => {
+    if (!isValid) {
+      setError("Please enter the exact amount: 29.99");
       return;
     }
-
-    try {
-      const resp = await fetch(`/api/verify-payment?session_id=${encodeURIComponent(sessionId)}`);
-      const data = (await resp.json()) as { paid?: boolean; error?: string };
-
-      if (data.paid) {
-        unlockPremium();
-        setState("success");
-      } else {
-        setState("failure");
-        setErrorMessage(data.error || "Payment could not be verified. Please contact support.");
-      }
-    } catch {
-      setState("failure");
-      setErrorMessage("Network error. Please check your connection and try again.");
-    }
-  }, [sessionId]);
-
-  useEffect(() => {
-    verifyPayment();
-  }, [verifyPayment]);
+    unlockPremium();
+    setError("");
+    setState("success");
+  }, [isValid]);
 
   return (
     <div className="page success-page">
       <div className="success-container">
-        {state === "loading" && (
+        {state === "form" && (
           <div className="success-state">
-            <div className="success-spinner" />
-            <h2 className="success-heading">Verifying your payment…</h2>
+            <div className="success-badge">✨</div>
+            <h2 className="success-heading">Complete Your Upgrade</h2>
             <p className="success-desc">
-              One moment while we confirm your purchase.
+              Already paid on Stripe? Enter the amount below to unlock your
+              premium features.
+            </p>
+
+            <div className="success-form">
+              <label className="success-label" htmlFor="success-amount">
+                Confirm the amount you paid
+              </label>
+              <div className="success-input-wrap">
+                <span className="success-input-dollar">$</span>
+                <input
+                  id="success-amount"
+                  className="success-input"
+                  type="text"
+                  inputMode="decimal"
+                  placeholder="29.99"
+                  value={amount}
+                  onChange={(e) => {
+                    setAmount(e.target.value);
+                    setError("");
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && isValid) handleUnlock();
+                  }}
+                  autoFocus
+                />
+              </div>
+              {error && <p className="success-error">{error}</p>}
+              <button
+                className="success-cta"
+                disabled={!isValid}
+                onClick={handleUnlock}
+              >
+                Unlock Premium
+              </button>
+            </div>
+
+            <p className="success-help">
+              Haven't paid yet?{" "}
+              <a
+                href="https://buy.stripe.com/00w28r9JDdoW76z1kAbMQ01"
+                className="success-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Complete your purchase →
+              </a>
             </p>
           </div>
         )}
@@ -72,35 +102,6 @@ export default function Success() {
             >
               Start Styling →
             </button>
-          </div>
-        )}
-
-        {state === "failure" && (
-          <div className="success-state success-state--fail">
-            <div className="success-badge success-badge--fail">😕</div>
-            <h2 className="success-heading">Verification Failed</h2>
-            <p className="success-desc">{errorMessage}</p>
-            <div className="success-actions">
-              <button
-                className="success-cta success-cta--secondary"
-                onClick={verifyPayment}
-              >
-                Try Again
-              </button>
-              <button
-                className="success-cta"
-                onClick={() => navigate("/profile")}
-              >
-                Back to Profile
-              </button>
-            </div>
-            <p className="success-help">
-              If you completed payment and still see this, email us at{" "}
-              <a href="mailto:help@fitcheck.app" className="success-link">
-                help@fitcheck.app
-              </a>{" "}
-              with your receipt.
-            </p>
           </div>
         )}
       </div>

@@ -1,35 +1,16 @@
 import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 
-const STRIPE_FALLBACK_LINK = "https://buy.stripe.com/00w28r9JDdoW76z1kAbMQ01";
+const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/00w28r9JDdoW76z1kAbMQ01";
 
 interface PaywallModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-async function createCheckoutSession(): Promise<string> {
-  try {
-    const resp = await fetch("/api/create-checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    });
-    const data = (await resp.json()) as { url?: string; fallback?: boolean };
-
-    if (data.url) {
-      return data.url;
-    }
-
-    // Fallback: API not configured — use the hosted payment link
-    console.warn("Stripe checkout API not available, using fallback link");
-    return STRIPE_FALLBACK_LINK;
-  } catch {
-    console.warn("Stripe checkout API unreachable, using fallback link");
-    return STRIPE_FALLBACK_LINK;
-  }
-}
-
 export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const [showCompleteLink, setShowCompleteLink] = useState(false);
 
   // Close on Escape key
   useEffect(() => {
@@ -41,17 +22,14 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
     return () => document.removeEventListener("keydown", handleKey);
   }, [isOpen, onClose]);
 
-  const handleUpgrade = useCallback(async () => {
-    setLoading(true);
-    try {
-      const url = await createCheckoutSession();
-      window.location.href = url;
-    } catch {
-      // Fallback — open the static link in a new tab
-      window.open(STRIPE_FALLBACK_LINK, "_blank", "noopener noreferrer");
-    } finally {
-      setLoading(false);
-    }
+  // Reset the "already paid" link when the modal opens fresh
+  useEffect(() => {
+    if (isOpen) setShowCompleteLink(false);
+  }, [isOpen]);
+
+  const handleUpgrade = useCallback(() => {
+    window.open(STRIPE_PAYMENT_LINK, "_blank", "noopener noreferrer");
+    setShowCompleteLink(true);
   }, []);
 
   if (!isOpen) return null;
@@ -104,10 +82,22 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
         <button
           className="paywall-cta"
           onClick={handleUpgrade}
-          disabled={loading}
         >
-          {loading ? "Preparing checkout…" : "Get FitCheck Premium — $29.99"}
+          Get FitCheck Premium — $29.99
         </button>
+
+        {/* "Already paid" link — appears after they click the Stripe link */}
+        {showCompleteLink && (
+          <button
+            className="paywall-complete-link"
+            onClick={() => {
+              onClose();
+              navigate("/success");
+            }}
+          >
+            Already paid? Complete your upgrade →
+          </button>
+        )}
 
         {/* Dismiss */}
         <button className="paywall-dismiss" onClick={onClose}>
