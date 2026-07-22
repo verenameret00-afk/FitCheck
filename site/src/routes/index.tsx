@@ -12,7 +12,7 @@ function Home() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) return;
-    setToast("You're on the list! 🎉 We'll let you know when FitCheck launches.");
+    setToast("You're on the list! 🎉 We'll let you know when Attired launches.");
     setEmail("");
     setTimeout(() => setToast(null), 5000);
   }
@@ -31,9 +31,9 @@ function Home() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <a href="#" className="flex items-center gap-2 text-xl font-extrabold tracking-tight text-[#1a1a1a]">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#8a9a5b] text-sm font-black text-white">
-              F
+              A
             </span>
-            FitCheck
+            Attired
           </a>
           <a
             href="#waitlist"
@@ -57,15 +57,15 @@ function Home() {
           </span>
 
           <h1 className="text-5xl font-extrabold leading-[1.08] tracking-tight text-[#1a1a1a] sm:text-7xl lg:text-8xl">
-            Shop your closet,
+            build looks
             <br />
             <span className="bg-gradient-to-r from-[#8a9a5b] to-[#9dae6d] bg-clip-text text-transparent">
-              not the store.
+              you love
             </span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-lg text-[#6b6b6b] sm:text-xl">
-            FitCheck uses AI to generate perfect outfit combinations from the clothes
+            Attired uses AI to generate perfect outfit combinations from the clothes
             you <em>already own</em>. Snap your closet, pick an occasion, and get
             styled — no shopping required.
           </p>
@@ -75,7 +75,7 @@ function Home() {
               href="#waitlist"
               className="group inline-flex items-center gap-2 rounded-full bg-[#8a9a5b] px-8 py-4 text-lg font-semibold text-white transition hover:bg-[#6b7a4a] hover:shadow-[0_0_40px_rgba(138,154,91,0.15)]"
             >
-              Try FitCheck Free
+              Try Attired Free
               <span className="transition group-hover:translate-x-0.5">→</span>
             </a>
             <a
@@ -206,7 +206,7 @@ function Home() {
               <div className="flex-1">
                 <h3 className="text-xl font-bold text-[#1a1a1a]">Style Twin</h3>
                 <p className="mt-3 leading-relaxed text-[#6b6b6b]">
-                  Find your style soulmate. FitCheck matches you with people who
+                  Find your style soulmate. Attired matches you with people who
                   have similar wardrobes and body types — swap ideas, not clothes.
                 </p>
               </div>
@@ -270,7 +270,7 @@ function Home() {
               Be the first to know
             </h2>
             <p className="mt-4 text-[#6b6b6b]">
-              FitCheck is launching soon. Drop your email and we'll let you know the
+              Attired is launching soon. Drop your email and we'll let you know the
               moment you can start styling — plus you'll get early-access perks.
             </p>
 
@@ -303,12 +303,12 @@ function Home() {
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 sm:flex-row">
           <div className="flex items-center gap-2 text-lg font-extrabold tracking-tight text-[#1a1a1a]">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#8a9a5b] text-xs font-black text-white">
-              F
+              A
             </span>
-            FitCheck
+            Attired
           </div>
 
-          <p className="text-sm text-[#9a9a8e]">© 2026 FitCheck. All rights reserved.</p>
+          <p className="text-sm text-[#9a9a8e]">© 2026 Attired. All rights reserved.</p>
 
           <div className="flex items-center gap-6">
             <a

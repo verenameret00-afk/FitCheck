@@ -7,7 +7,7 @@ import { isPremium, unlockPremium } from "../lib/usage";
 const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/00w28r9JDdoW76z1kAbMQ01";
 
 const INVITE_TEXT =
-  "👯 Find your Style Twin on FitCheck! We match you with people who have similar wardrobes and body types so you can swap outfit ideas. Join me: https://fitcheck.app";
+  "👯 Find your Style Twin on Attired! We match you with people who have similar wardrobes and body types so you can swap outfit ideas. Join me: https://attired.app";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ export default function Profile() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Join me on FitCheck",
+          title: "Join me on Attired",
           text: INVITE_TEXT,
         });
       } catch {
@@ -206,7 +206,7 @@ export default function Profile() {
             <span className="profile-subscription-icon">{premium ? "👑" : "✨"}</span>
             <div>
               <h4 className="profile-subscription-plan">
-                {premium ? "FitCheck Premium" : "Free Plan"}
+                {premium ? "Attired Premium" : "Free Plan"}
                 {premium && <span className="profile-premium-badge">Premium</span>}
               </h4>
               <p className="profile-subscription-desc">
@@ -269,7 +269,7 @@ export default function Profile() {
         </div>
         <h3 className="styletwin-invite-title">Invite Friends</h3>
         <p className="styletwin-invite-desc">
-          Share FitCheck with friends to unlock real Style Twin matching.
+          Share Attired with friends to unlock real Style Twin matching.
         </p>
         <div className="styletwin-invite-actions">
           <button className="styletwin-invite-btn primary" onClick={handleShare}>

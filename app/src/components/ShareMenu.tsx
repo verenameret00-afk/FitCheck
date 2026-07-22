@@ -39,6 +39,7 @@ function generateShareCaption(outfit: OutfitSuggestion): string {
   const vibeStr = "🔥".repeat(outfit.vibeRating);
   const hashtags = [
     "#FitCheck",
+    "#AttiredApp",
     "#OOTD",
     "#ShopYourCloset",
     "#StyleInspo",
@@ -53,7 +54,7 @@ function generateShareCaption(outfit: OutfitSuggestion): string {
     "",
     outfit.description,
     "",
-    "Styled with FitCheck ✨",
+    "Styled with Attired ✨",
     "",
     hashtags.join(" "),
   ].join("\n");
@@ -124,7 +125,7 @@ export default function ShareMenu({
         // Fallback: download the image with instructions
         downloadPng(
           dataUrl,
-          `fitcheck-${outfit.name.toLowerCase().replace(/\s+/g, "-")}.png`,
+          `attired-${outfit.name.toLowerCase().replace(/\s+/g, "-")}.png`,
         );
         setToast("📸 Image saved! Open Instagram and post it manually.");
       } else {
@@ -134,7 +135,7 @@ export default function ShareMenu({
       // Desktop: download
       downloadPng(
         dataUrl,
-        `fitcheck-${outfit.name.toLowerCase().replace(/\s+/g, "-")}.png`,
+        `attired-${outfit.name.toLowerCase().replace(/\s+/g, "-")}.png`,
       );
       setToast("📸 Image saved! Post to Instagram manually.");
     }
@@ -149,7 +150,7 @@ export default function ShareMenu({
     // Download the image and copy caption
     downloadPng(
       dataUrl,
-      `fitcheck-${outfit.name.toLowerCase().replace(/\s+/g, "-")}.png`,
+      `attired-${outfit.name.toLowerCase().replace(/\s+/g, "-")}.png`,
     );
 
     if (isMobile) {
@@ -182,7 +183,7 @@ export default function ShareMenu({
 
     downloadPng(
       dataUrl,
-      `fitcheck-${outfit.name.toLowerCase().replace(/\s+/g, "-")}.png`,
+      `attired-${outfit.name.toLowerCase().replace(/\s+/g, "-")}.png`,
     );
     setToast("💾 Image saved to your device!");
     onClose();
@@ -213,12 +214,12 @@ export default function ShareMenu({
       const blob = await response.blob();
       const file = new File(
         [blob],
-        `fitcheck-${outfit.name.toLowerCase().replace(/\s+/g, "-")}.png`,
+        `attired-${outfit.name.toLowerCase().replace(/\s+/g, "-")}.png`,
         { type: "image/png" },
       );
 
       await navigator.share({
-        title: `FitCheck — ${outfit.name}`,
+        title: `Attired — ${outfit.name}`,
         text: generateShareCaption(outfit),
         files: [file],
       });
@@ -228,7 +229,7 @@ export default function ShareMenu({
         // Fallback: share text only
         try {
           await navigator.share({
-            title: `FitCheck — ${outfit.name}`,
+            title: `Attired — ${outfit.name}`,
             text: generateShareCaption(outfit),
           });
         } catch {

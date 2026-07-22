@@ -13,21 +13,21 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "FitCheck — AI-Powered Personal Styling" },
+      { title: "Attired — build looks you love" },
       {
         name: "description",
         content:
-          "Shop your closet, not the store. FitCheck uses AI to generate outfit combos from clothes you already own. Snap your closet, get styled.",
+          "Attired uses AI to generate outfit combos from clothes you already own. Snap your closet, get styled — build looks you love.",
       },
-      { property: "og:title", content: "FitCheck — AI-Powered Personal Styling" },
+      { property: "og:title", content: "Attired — build looks you love" },
       {
         property: "og:description",
         content:
-          "Shop your closet, not the store. AI outfit generation from your own wardrobe.",
+          "build looks you love — AI outfit generation from your own wardrobe.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "FitCheck — AI-Powered Personal Styling" },
+      { name: "twitter:title", content: "Attired — build looks you love" },
       {
         name: "twitter:description",
         content: "AI outfit generation from your own wardrobe. Snap your closet, get styled.",

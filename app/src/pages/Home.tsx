@@ -7,8 +7,8 @@ export default function Home() {
     <div className="page home-page">
       <div className="hero">
         <div className="logo-mark">◆</div>
-        <h1 className="app-name">FitCheck</h1>
-        <p className="tagline">Shop your closet, not the store</p>
+        <h1 className="app-name">Attired</h1>
+        <p className="tagline">build looks you love</p>
         <p className="subtitle">
           AI-powered outfits from clothes you already own
         </p>

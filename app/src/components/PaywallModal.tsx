@@ -83,7 +83,7 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
           className="paywall-cta"
           onClick={handleUpgrade}
         >
-          Get FitCheck Premium — $29.99
+          Get Attired Premium — $29.99
         </button>
 
         {/* "Already paid" link — appears after they click the Stripe link */}

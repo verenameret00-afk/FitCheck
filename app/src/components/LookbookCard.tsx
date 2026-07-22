@@ -61,7 +61,7 @@ const LookbookCard = forwardRef<LookbookCardHandle, LookbookCardProps>(
       try {
         const dataUrl = await exportPng();
         const link = document.createElement("a");
-        link.download = `fitcheck-${outfit.name.toLowerCase().replace(/\s+/g, "-")}.png`;
+        link.download = `attired-${outfit.name.toLowerCase().replace(/\s+/g, "-")}.png`;
         link.href = dataUrl;
         link.click();
       } catch (err) {
@@ -111,7 +111,7 @@ const LookbookCard = forwardRef<LookbookCardHandle, LookbookCardProps>(
           {/* Watermark */}
           <div className="lookbook-watermark">
             <span className="lookbook-watermark-icon">✨</span>
-            <span>Styled by FitCheck</span>
+            <span>Styled by Attired</span>
           </div>
         </div>
 

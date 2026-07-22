@@ -55,7 +55,7 @@ const DEMO_MATCHES: TwinMatch[] = [
 ];
 
 const INVITE_TEXT =
-  "👯 Find your Style Twin on FitCheck! We match you with people who have similar wardrobes and body types so you can swap outfit ideas. Join me: https://fitcheck.app";
+  "👯 Find your Style Twin on Attired! We match you with people who have similar wardrobes and body types so you can swap outfit ideas. Join me: https://attired.app";
 
 export default function StyleTwin() {
   const { items } = useCloset();
@@ -95,7 +95,7 @@ export default function StyleTwin() {
       await navigator.clipboard.writeText(INVITE_TEXT);
       setToast("🔗 Invite link copied!");
     } catch {
-      setToast("Copy this: Find your Style Twin on FitCheck! 👯");
+      setToast("Copy this: Find your Style Twin on Attired! 👯");
     }
   }, []);
 
@@ -103,7 +103,7 @@ export default function StyleTwin() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Find your Style Twin on FitCheck",
+          title: "Find your Style Twin on Attired",
           text: INVITE_TEXT,
         });
       } catch {

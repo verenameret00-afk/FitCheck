@@ -1,5 +1,5 @@
 /** Week-based generation counter using localStorage. */
-const STORAGE_KEY = "fitcheck_usage";
+const STORAGE_KEY = "attired_usage";
 const FREE_LIMIT = 4;
 
 interface UsageData {
@@ -77,7 +77,7 @@ export function getRemainingGenerations(): number {
 
 /* ── Premium ── */
 
-const PREMIUM_KEY = "fitcheck_premium";
+const PREMIUM_KEY = "attired_premium";
 
 export function isPremium(): boolean {
   try {
