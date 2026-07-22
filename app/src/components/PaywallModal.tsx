@@ -1,13 +1,36 @@
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 
-const STRIPE_LINK = "https://buy.stripe.com/00w28r9JDdoW76z1kAbMQ01";
+const STRIPE_FALLBACK_LINK = "https://buy.stripe.com/00w28r9JDdoW76z1kAbMQ01";
 
 interface PaywallModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+async function createCheckoutSession(): Promise<string> {
+  try {
+    const resp = await fetch("/api/create-checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+    const data = (await resp.json()) as { url?: string; fallback?: boolean };
+
+    if (data.url) {
+      return data.url;
+    }
+
+    // Fallback: API not configured — use the hosted payment link
+    console.warn("Stripe checkout API not available, using fallback link");
+    return STRIPE_FALLBACK_LINK;
+  } catch {
+    console.warn("Stripe checkout API unreachable, using fallback link");
+    return STRIPE_FALLBACK_LINK;
+  }
+}
+
 export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
+  const [loading, setLoading] = useState(false);
+
   // Close on Escape key
   useEffect(() => {
     if (!isOpen) return;
@@ -17,6 +40,19 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
     document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
   }, [isOpen, onClose]);
+
+  const handleUpgrade = useCallback(async () => {
+    setLoading(true);
+    try {
+      const url = await createCheckoutSession();
+      window.location.href = url;
+    } catch {
+      // Fallback — open the static link in a new tab
+      window.open(STRIPE_FALLBACK_LINK, "_blank", "noopener noreferrer");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   if (!isOpen) return null;
 
@@ -65,14 +101,13 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
         </p>
 
         {/* CTA */}
-        <a
-          href={STRIPE_LINK}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
           className="paywall-cta"
+          onClick={handleUpgrade}
+          disabled={loading}
         >
-          Get FitCheck Premium — $29.99
-        </a>
+          {loading ? "Preparing checkout…" : "Get FitCheck Premium — $29.99"}
+        </button>
 
         {/* Dismiss */}
         <button className="paywall-dismiss" onClick={onClose}>

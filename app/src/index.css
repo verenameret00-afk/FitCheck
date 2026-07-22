@@ -2242,3 +2242,167 @@ h1, h2, h3, h4, h5, h6,
   border-color: var(--accent);
   color: var(--text-secondary);
 }
+
+/* ════════════════════════════════════════
+   Paywall CTA — disabled state
+   ════════════════════════════════════════ */
+.paywall-cta:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ════════════════════════════════════════
+   Profile — Upgrade button disabled state
+   ════════════════════════════════════════ */
+.profile-subscription-btn.primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ════════════════════════════════════════
+   Success / Post-Payment Page
+   ════════════════════════════════════════ */
+.success-page {
+  min-height: calc(100dvh - var(--nav-height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.success-container {
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.success-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px 20px;
+}
+
+.success-spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: success-spin 0.8s linear infinite;
+}
+
+@keyframes success-spin {
+  to { transform: rotate(360deg); }
+}
+
+.success-badge {
+  font-size: 64px;
+  line-height: 1;
+  animation: success-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.success-badge--fail {
+  filter: grayscale(0.3);
+}
+
+@keyframes success-pop {
+  0% { transform: scale(0.3); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.success-heading {
+  font-family: "Playfair Display", "Georgia", serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.success-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 300px;
+}
+
+.success-features {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.success-feature {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.success-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 20px;
+  padding: 14px 36px;
+  background: var(--accent);
+  color: #0a0a0b;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.success-cta:hover {
+  background: var(--accent-secondary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px var(--accent-glow);
+}
+
+.success-cta--secondary {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.success-cta--secondary:hover {
+  background: var(--bg-card);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.success-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.success-actions .success-cta {
+  margin-top: 4px;
+}
+
+.success-help {
+  margin-top: 20px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  max-width: 280px;
+}
+
+.success-link {
+  color: var(--accent-secondary);
+  text-decoration: underline;
+}
+
+.success-link:hover {
+  color: var(--accent);
+}

@@ -5,6 +5,7 @@ import Closet from "./pages/Closet";
 import Outfits from "./pages/Outfits";
 import StyleTwin from "./pages/StyleTwin";
 import Profile from "./pages/Profile";
+import Success from "./pages/Success";
 import BottomNav from "./components/BottomNav";
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
             <Route path="/outfits" element={<Outfits />} />
             <Route path="/styletwin" element={<StyleTwin />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/success" element={<Success />} />
           </Routes>
         </main>
         <BottomNav />

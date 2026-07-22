@@ -4,16 +4,38 @@ import { useCloset } from "../contexts/ClosetContext";
 import { generateStyleProfile } from "../lib/styleProfile";
 import { isPremium, unlockPremium } from "../lib/usage";
 
-const STRIPE_LINK = "https://buy.stripe.com/00w28r9JDdoW76z1kAbMQ01";
+const STRIPE_FALLBACK_LINK = "https://buy.stripe.com/00w28r9JDdoW76z1kAbMQ01";
 
 const INVITE_TEXT =
   "👯 Find your Style Twin on FitCheck! We match you with people who have similar wardrobes and body types so you can swap outfit ideas. Join me: https://fitcheck.app";
+
+async function createCheckoutSession(): Promise<string> {
+  try {
+    const resp = await fetch("/api/create-checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+    const data = (await resp.json()) as { url?: string; fallback?: boolean };
+
+    if (data.url) {
+      return data.url;
+    }
+
+    // Fallback: API not configured — use the hosted payment link
+    console.warn("Stripe checkout API not available, using fallback link");
+    return STRIPE_FALLBACK_LINK;
+  } catch {
+    console.warn("Stripe checkout API unreachable, using fallback link");
+    return STRIPE_FALLBACK_LINK;
+  }
+}
 
 export default function Profile() {
   const navigate = useNavigate();
   const { items } = useCloset();
   const [toast, setToast] = useState<string | null>(null);
   const [premium, setPremium] = useState(false);
+  const [upgrading, setUpgrading] = useState(false);
 
   useEffect(() => {
     setPremium(isPremium());
@@ -54,8 +76,17 @@ export default function Profile() {
     }
   }, []);
 
-  const handleUpgrade = useCallback(() => {
-    window.open(STRIPE_LINK, "_blank", "noopener noreferrer");
+  const handleUpgrade = useCallback(async () => {
+    setUpgrading(true);
+    try {
+      const url = await createCheckoutSession();
+      window.location.href = url;
+    } catch {
+      // Fallback
+      window.open(STRIPE_FALLBACK_LINK, "_blank", "noopener noreferrer");
+    } finally {
+      setUpgrading(false);
+    }
   }, []);
 
   const handleTestUnlock = useCallback(() => {
@@ -222,8 +253,12 @@ export default function Profile() {
             </button>
           ) : (
             <div className="profile-subscription-actions">
-              <button className="profile-subscription-btn primary" onClick={handleUpgrade}>
-                Upgrade — $29.99
+              <button
+                className="profile-subscription-btn primary"
+                onClick={handleUpgrade}
+                disabled={upgrading}
+              >
+                {upgrading ? "Preparing checkout…" : "Upgrade — $29.99"}
               </button>
               <button className="profile-subscription-btn subtle" onClick={handleTestUnlock}>
                 Test: Unlock Premium
