@@ -2,6 +2,9 @@ import { useMemo, useCallback, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCloset } from "../contexts/ClosetContext";
 import { generateStyleProfile } from "../lib/styleProfile";
+import { isPremium, unlockPremium } from "../lib/usage";
+
+const STRIPE_LINK = "https://buy.stripe.com/cNifZh6xr5Wu62v3sIbMQ00";
 
 const INVITE_TEXT =
   "👯 Find your Style Twin on FitCheck! We match you with people who have similar wardrobes and body types so you can swap outfit ideas. Join me: https://fitcheck.app";
@@ -10,6 +13,11 @@ export default function Profile() {
   const navigate = useNavigate();
   const { items } = useCloset();
   const [toast, setToast] = useState<string | null>(null);
+  const [premium, setPremium] = useState(false);
+
+  useEffect(() => {
+    setPremium(isPremium());
+  }, []);
 
   const profile = useMemo(() => {
     if (items.length === 0) return null;
@@ -44,6 +52,16 @@ export default function Profile() {
     } catch {
       setToast("📋 Copy this to invite friends!");
     }
+  }, []);
+
+  const handleUpgrade = useCallback(() => {
+    window.open(STRIPE_LINK, "_blank", "noopener noreferrer");
+  }, []);
+
+  const handleTestUnlock = useCallback(() => {
+    unlockPremium();
+    setPremium(true);
+    setToast("✨ Premium unlocked!");
   }, []);
 
   // No items — show empty state
@@ -179,6 +197,41 @@ export default function Profile() {
           </div>
         </div>
       )}
+
+      {/* Subscription */}
+      <div className="profile-section">
+        <h4 className="profile-section-title">Subscription</h4>
+        <div className={`profile-subscription-card ${premium ? "profile-subscription-card--premium" : ""}`}>
+          <div className="profile-subscription-info">
+            <span className="profile-subscription-icon">{premium ? "👑" : "✨"}</span>
+            <div>
+              <h4 className="profile-subscription-plan">
+                {premium ? "FitCheck Premium" : "Free Plan"}
+                {premium && <span className="profile-premium-badge">Premium</span>}
+              </h4>
+              <p className="profile-subscription-desc">
+                {premium
+                  ? "Unlimited styling, closet organization, and shopping recommendations."
+                  : "4 outfit generations per week."}
+              </p>
+            </div>
+          </div>
+          {premium ? (
+            <button className="profile-subscription-btn secondary" onClick={handleTestUnlock}>
+              Manage Subscription
+            </button>
+          ) : (
+            <div className="profile-subscription-actions">
+              <button className="profile-subscription-btn primary" onClick={handleUpgrade}>
+                Upgrade — $9.99/mo
+              </button>
+              <button className="profile-subscription-btn subtle" onClick={handleTestUnlock}>
+                Test: Unlock Premium
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Find Style Twin CTA */}
       <div className="profile-twin-cta">

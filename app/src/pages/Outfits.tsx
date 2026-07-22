@@ -2,8 +2,16 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useCloset } from "../contexts/ClosetContext";
 import { generateOutfits, type OutfitSuggestion } from "../lib/outfits";
+import {
+  resetIfNewWeek,
+  getGenerationCount,
+  incrementGenerationCount,
+  hasReachedLimit,
+  isPremium,
+} from "../lib/usage";
 import LookbookCard, { type CardVariant, type LookbookCardHandle } from "../components/LookbookCard";
 import ShareMenu from "../components/ShareMenu";
+import PaywallModal from "../components/PaywallModal";
 
 const OCCASIONS = [
   "Date Night",
@@ -32,6 +40,11 @@ export default function Outfits() {
   const [hasGenerated, setHasGenerated] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Paywall / usage
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [genCount, setGenCount] = useState(0);
+  const [premium, setPremium] = useState(false);
+
   // Share menu state
   const [shareOutfit, setShareOutfit] = useState<OutfitSuggestion | null>(null);
   const [shareOutfitIdx, setShareOutfitIdx] = useState<number>(-1);
@@ -59,6 +72,18 @@ export default function Outfits() {
     return () => clearInterval(interval);
   }, [isGenerating]);
 
+  // Sync usage state on mount & after generation
+  const syncUsage = useCallback(() => {
+    resetIfNewWeek();
+    setPremium(isPremium());
+    setGenCount(getGenerationCount());
+  }, []);
+
+  // Sync on mount
+  useEffect(() => {
+    syncUsage();
+  }, [syncUsage]);
+
   const handleOccasionSelect = (occasion: string) => {
     const next = selectedOccasion === occasion ? null : occasion;
     setSelectedOccasion(next);
@@ -66,6 +91,12 @@ export default function Outfits() {
 
   const handleGenerate = useCallback(async () => {
     if (!selectedOccasion || items.length === 0) return;
+
+    // Check usage limit
+    if (hasReachedLimit()) {
+      setShowPaywall(true);
+      return;
+    }
 
     setIsGenerating(true);
     setError(null);
@@ -75,13 +106,16 @@ export default function Outfits() {
       const result = await generateOutfits(items, selectedOccasion);
       setOutfits(result);
       setHasGenerated(true);
+      // Bump the counter and sync
+      incrementGenerationCount();
+      syncUsage();
     } catch (err) {
       console.error("Outfit generation failed:", err);
       setError("Something went wrong. Please try again.");
     } finally {
       setIsGenerating(false);
     }
-  }, [items, selectedOccasion]);
+  }, [items, selectedOccasion, syncUsage]);
 
   const toggleLike = (outfitId: string) => {
     setLiked((prev) => {
@@ -178,6 +212,18 @@ export default function Outfits() {
             </>
           )}
         </button>
+        {/* Usage badge */}
+        <div className="usage-badge">
+          {premium ? (
+            <span className="usage-badge-premium">∞ Premium</span>
+          ) : genCount >= 4 ? (
+            <span className="usage-badge-limit">You've used all 4 free generations</span>
+          ) : (
+            <span className="usage-badge-count">
+              {genCount} of 4 free this week
+            </span>
+          )}
+        </div>
         {items.length > 0 && !selectedOccasion && !isGenerating && (
           <p className="generate-hint">Select an occasion above to get started</p>
         )}
@@ -271,6 +317,12 @@ export default function Outfits() {
           outfit={shareOutfit}
         />
       )}
+
+      {/* Paywall Modal */}
+      <PaywallModal
+        isOpen={showPaywall}
+        onClose={() => setShowPaywall(false)}
+      />
     </div>
   );
 }
