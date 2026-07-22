@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const STRIPE_LINK = "https://buy.stripe.com/cNifZh6xr5Wu62v3sIbMQ00";
+const STRIPE_LINK = "https://buy.stripe.com/00w28r9JDdoW76z1kAbMQ01";
 
 interface PaywallModalProps {
   isOpen: boolean;
@@ -60,8 +60,8 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
 
         {/* Price */}
         <p className="paywall-price">
-          <span className="paywall-amount">$9.99</span>
-          <span className="paywall-period">/month</span>
+          <span className="paywall-amount">$29.99</span>
+          <span className="paywall-period">one-time</span>
         </p>
 
         {/* CTA */}
@@ -71,7 +71,7 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
           rel="noopener noreferrer"
           className="paywall-cta"
         >
-          Get FitCheck Premium — $9.99/mo
+          Get FitCheck Premium — $29.99
         </a>
 
         {/* Dismiss */}

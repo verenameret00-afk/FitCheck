@@ -4,7 +4,7 @@ import { useCloset } from "../contexts/ClosetContext";
 import { generateStyleProfile } from "../lib/styleProfile";
 import { isPremium, unlockPremium } from "../lib/usage";
 
-const STRIPE_LINK = "https://buy.stripe.com/cNifZh6xr5Wu62v3sIbMQ00";
+const STRIPE_LINK = "https://buy.stripe.com/00w28r9JDdoW76z1kAbMQ01";
 
 const INVITE_TEXT =
   "👯 Find your Style Twin on FitCheck! We match you with people who have similar wardrobes and body types so you can swap outfit ideas. Join me: https://fitcheck.app";
@@ -223,7 +223,7 @@ export default function Profile() {
           ) : (
             <div className="profile-subscription-actions">
               <button className="profile-subscription-btn primary" onClick={handleUpgrade}>
-                Upgrade — $9.99/mo
+                Upgrade — $29.99
               </button>
               <button className="profile-subscription-btn subtle" onClick={handleTestUnlock}>
                 Test: Unlock Premium
