@@ -40,120 +40,49 @@ function toItemForPrompt(item: ClosetItem): ItemForPrompt {
   };
 }
 
-function buildPrompt(items: ItemForPrompt[], occasion: string): string {
-  const itemList = items
-    .map(
-      (item, i) =>
-        `${i + 1}. [id: ${item.id}] ${item.color} ${item.pattern} ${item.subcategory} ` +
-        `(${item.category}) — style: ${item.styleTags.join(", ")}, ` +
-        `seasons: ${item.seasonality.join(", ")}`,
-    )
-    .join("\n");
-
-  return `You are a professional fashion stylist. A user needs outfit combinations for: "${occasion}".
-
-Their wardrobe contains these items:
-${itemList}
-
-Create 3-5 outfit combinations using ONLY the items listed above (reference them by their id). Each outfit should use 2-5 complementary items.
-
-Return ONLY a JSON array (no markdown, no code fences, no extra text) of outfit objects, each with:
-- "name": a catchy, fun name for the outfit (e.g. "Sunset Stroll", "Boardroom Boss")
-- "itemIds": array of the item IDs used from the list above
-- "description": one sentence explaining why this combination works for the occasion
-- "vibeRating": number 1-5 rating the overall vibe
-
-Example response:
-[{"name":"Effortless Brunch","itemIds":["item-1","item-4","item-7"],"description":"The relaxed linen top balances the structured trousers for an elevated yet comfortable brunch look.","vibeRating":4}]`;
-}
-
 /**
- * Generate outfit suggestions using OpenAI GPT-4o.
- * On failure or missing API key, returns a fallback using simple combinatorial logic.
+ * Generate outfit suggestions by calling the backend proxy,
+ * which forwards to OpenAI GPT-4o.
+ * On failure, returns a fallback using simple combinatorial logic.
  */
 export async function generateOutfits(
   items: ClosetItem[],
   occasion: string,
 ): Promise<OutfitSuggestion[]> {
-  const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-
-  if (!apiKey || apiKey === "placeholder_replace_me") {
-    console.warn(
-      "OpenAI API key not configured — using fallback outfit generation",
-    );
-    return generateFallback(items, occasion);
-  }
-
   try {
     const promptItems = items.map(toItemForPrompt);
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("/api/outfits", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o",
-        messages: [
-          {
-            role: "user",
-            content: buildPrompt(promptItems, occasion),
-          },
-        ],
-        max_tokens: 1000,
-        temperature: 0.7,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items: promptItems, occasion }),
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error(
-        `OpenAI API error (${response.status}): ${errorText.slice(0, 200)}`,
-      );
+      console.error(`Server error (${response.status}) — using fallback generation`);
       return generateFallback(items, occasion);
     }
 
-    const data = await response.json();
-    const content = data.choices?.[0]?.message?.content;
+    const data: unknown = await response.json();
 
-    if (!content) {
-      console.error("OpenAI API returned empty content");
+    if (!Array.isArray(data)) {
+      console.error("Server returned non-array — using fallback generation");
       return generateFallback(items, occasion);
     }
 
-    const jsonStr = content
-      .replace(/^```(?:json)?\s*/i, "")
-      .replace(/\s*```$/i, "")
-      .trim();
-
-    const parsed: unknown[] = JSON.parse(jsonStr);
-
-    if (!Array.isArray(parsed)) {
-      throw new Error("Expected an array of outfits");
-    }
+    const validIds = new Set(items.map((item) => item.id));
 
     let idCounter = 1;
-    return parsed.slice(0, 5).map((o: unknown) => {
-      const obj = o as Record<string, unknown>;
-      // Validate itemIds — only include IDs that actually exist
-      const validIds = items.map((item) => item.id);
-      const rawIds: string[] = Array.isArray(obj.itemIds)
-        ? obj.itemIds.map(String)
-        : [];
-      const filteredIds = rawIds.filter((id) => validIds.includes(id));
+    return (data as Array<Record<string, unknown>>).slice(0, 5).map((o) => {
+      const rawIds: string[] = Array.isArray(o.itemIds) ? o.itemIds.map(String) : [];
+      const filteredIds = rawIds.filter((id) => validIds.has(id));
 
       return {
-        id: `outfit-${idCounter++}`,
-        name: String(obj.name || `Look ${idCounter - 1}`),
-        itemIds: filteredIds.length > 0 ? filteredIds : validIds.slice(0, 2),
-        description: String(
-          obj.description || `A great combination for ${occasion}.`,
-        ),
-        vibeRating: Math.min(
-          5,
-          Math.max(1, Math.round(Number(obj.vibeRating) || 4)),
-        ),
-        occasion,
+        id: String(o.id || `outfit-${idCounter++}`),
+        name: String(o.name || `Look ${idCounter - 1}`),
+        itemIds: filteredIds.length > 0 ? filteredIds : items.slice(0, 2).map((i) => i.id),
+        description: String(o.description || `A great combination for ${occasion}.`),
+        vibeRating: Math.min(5, Math.max(1, Math.round(Number(o.vibeRating) || 4))),
+        occasion: String(o.occasion || occasion),
       };
     });
   } catch (err) {
