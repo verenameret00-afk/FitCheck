@@ -16,7 +16,7 @@
 
   body {
     font-family: var(--font-sans);
-    color: #f5f0e8;
+    color: #1a1a1a;
   }
 
   h1, h2, h3 {
@@ -25,8 +25,8 @@
 
   /* Custom selection color */
   ::selection {
-    background-color: rgba(138, 154, 91, 0.3);
-    color: #f5f0e8;
+    background-color: rgba(138, 154, 91, 0.2);
+    color: #1a1a1a;
   }
 }
 

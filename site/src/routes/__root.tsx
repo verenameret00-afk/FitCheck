@@ -61,11 +61,11 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <HeadContent />
       </head>
-      <body className="bg-[#0a0a0b] text-[#f5f0e8] antialiased">
+      <body className="bg-[#fafbf8] text-[#1a1a1a] antialiased">
         {children}
         <Scripts />
       </body>
