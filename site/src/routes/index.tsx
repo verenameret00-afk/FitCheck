@@ -30,14 +30,14 @@ function Home() {
       <nav className="sticky top-0 z-40 border-b border-white/5 bg-[#0a0a0b]/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <a href="#" className="flex items-center gap-2 text-xl font-extrabold tracking-tight">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ff3b5c] text-sm font-black text-white">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#8a9a5b] text-sm font-black text-white">
               F
             </span>
             FitCheck
           </a>
           <a
             href="#waitlist"
-            className="rounded-full bg-[#ff3b5c] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#e63450]"
+            className="rounded-full bg-[#8a9a5b] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#6b7a4a]"
           >
             Get Early Access
           </a>
@@ -48,18 +48,18 @@ function Home() {
       <section className="relative overflow-hidden px-6 pb-20 pt-16 sm:pt-28 sm:pb-32">
         {/* Background glow */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#ff3b5c] opacity-[0.07] blur-[120px]" />
+          <div className="absolute -top-40 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#8a9a5b] opacity-[0.07] blur-[120px]" />
         </div>
 
         <div className="relative mx-auto max-w-4xl text-center">
-          <span className="mb-6 inline-block rounded-full border border-[#ff3b5c]/30 bg-[#ff3b5c]/10 px-4 py-1.5 text-sm font-medium text-[#ff3b5c]">
+          <span className="mb-6 inline-block rounded-full border border-[#8a9a5b]/30 bg-[#8a9a5b]/10 px-4 py-1.5 text-sm font-medium text-[#8a9a5b]">
             AI-Powered Personal Styling
           </span>
 
           <h1 className="text-5xl font-extrabold leading-[1.08] tracking-tight sm:text-7xl lg:text-8xl">
             Shop your closet,
             <br />
-            <span className="bg-gradient-to-r from-[#ff3b5c] to-[#ff6b81] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#8a9a5b] to-[#9dae6d] bg-clip-text text-transparent">
               not the store.
             </span>
           </h1>
@@ -73,7 +73,7 @@ function Home() {
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <a
               href="#waitlist"
-              className="group inline-flex items-center gap-2 rounded-full bg-[#ff3b5c] px-8 py-4 text-lg font-semibold text-white transition hover:bg-[#e63450] hover:shadow-[0_0_40px_rgba(255,59,92,0.3)]"
+              className="group inline-flex items-center gap-2 rounded-full bg-[#8a9a5b] px-8 py-4 text-lg font-semibold text-white transition hover:bg-[#6b7a4a] hover:shadow-[0_0_40px_rgba(138,154,91,0.3)]"
             >
               Try FitCheck Free
               <span className="transition group-hover:translate-x-0.5">→</span>
@@ -93,7 +93,7 @@ function Home() {
         <div className="mx-auto max-w-6xl">
           <h2 className="text-center text-3xl font-extrabold tracking-tight sm:text-4xl">
             Get styled in{" "}
-            <span className="bg-gradient-to-r from-[#ff3b5c] to-[#ff6b81] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#8a9a5b] to-[#9dae6d] bg-clip-text text-transparent">
               3 steps
             </span>
           </h2>
@@ -103,8 +103,8 @@ function Home() {
 
           <div className="mt-16 grid gap-8 sm:grid-cols-3">
             {/* Step 1 */}
-            <div className="group rounded-2xl border border-white/5 bg-white/[0.02] p-8 transition hover:border-[#ff3b5c]/20 hover:bg-white/[0.04]">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#ff3b5c]/10 text-3xl ring-1 ring-[#ff3b5c]/20">
+            <div className="group rounded-2xl border border-white/5 bg-white/[0.02] p-8 transition hover:border-[#8a9a5b]/20 hover:bg-white/[0.04]">
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#8a9a5b]/10 text-3xl ring-1 ring-[#8a9a5b]/20">
                 📸
               </div>
               <h3 className="mt-6 text-xl font-bold">Snap your closet</h3>
@@ -112,14 +112,14 @@ function Home() {
                 Open your wardrobe and snap photos of your tops, bottoms, dresses,
                 and shoes. Our AI catalogs everything automatically.
               </p>
-              <span className="mt-4 inline-block text-sm font-semibold text-[#ff3b5c]/60">
+              <span className="mt-4 inline-block text-sm font-semibold text-[#8a9a5b]/60">
                 01
               </span>
             </div>
 
             {/* Step 2 */}
-            <div className="group rounded-2xl border border-white/5 bg-white/[0.02] p-8 transition hover:border-[#ff3b5c]/20 hover:bg-white/[0.04]">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#ff3b5c]/10 text-3xl ring-1 ring-[#ff3b5c]/20">
+            <div className="group rounded-2xl border border-white/5 bg-white/[0.02] p-8 transition hover:border-[#8a9a5b]/20 hover:bg-white/[0.04]">
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#8a9a5b]/10 text-3xl ring-1 ring-[#8a9a5b]/20">
                 🤖
               </div>
               <h3 className="mt-6 text-xl font-bold">AI analyzes your style</h3>
@@ -127,14 +127,14 @@ function Home() {
                 Our vision AI identifies each piece — color, cut, fabric, and vibe.
                 It learns your style DNA and builds a smart catalog.
               </p>
-              <span className="mt-4 inline-block text-sm font-semibold text-[#ff3b5c]/60">
+              <span className="mt-4 inline-block text-sm font-semibold text-[#8a9a5b]/60">
                 02
               </span>
             </div>
 
             {/* Step 3 */}
-            <div className="group rounded-2xl border border-white/5 bg-white/[0.02] p-8 transition hover:border-[#ff3b5c]/20 hover:bg-white/[0.04]">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#ff3b5c]/10 text-3xl ring-1 ring-[#ff3b5c]/20">
+            <div className="group rounded-2xl border border-white/5 bg-white/[0.02] p-8 transition hover:border-[#8a9a5b]/20 hover:bg-white/[0.04]">
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#8a9a5b]/10 text-3xl ring-1 ring-[#8a9a5b]/20">
                 ✨
               </div>
               <h3 className="mt-6 text-xl font-bold">Get outfit combos</h3>
@@ -142,7 +142,7 @@ function Home() {
                 Pick an occasion — date night, brunch, interview — and get 3-5 styled
                 looks from your own clothes. Ready to wear, ready to share.
               </p>
-              <span className="mt-4 inline-block text-sm font-semibold text-[#ff3b5c]/60">
+              <span className="mt-4 inline-block text-sm font-semibold text-[#8a9a5b]/60">
                 03
               </span>
             </div>
@@ -155,7 +155,7 @@ function Home() {
         <div className="mx-auto max-w-6xl">
           <h2 className="text-center text-3xl font-extrabold tracking-tight sm:text-4xl">
             Built for the{" "}
-            <span className="bg-gradient-to-r from-[#ff3b5c] to-[#ff6b81] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#8a9a5b] to-[#9dae6d] bg-clip-text text-transparent">
               GRWM generation
             </span>
           </h2>
@@ -177,9 +177,9 @@ function Home() {
               {/* Card mockup */}
               <div className="mt-8 space-y-3">
                 {[
-                  { label: "Date Night", accent: "#ff3b5c" },
-                  { label: "Brunch", accent: "#ff6b81" },
-                  { label: "Office Fit", accent: "#ff8fa3" },
+                  { label: "Date Night", accent: "#8a9a5b" },
+                  { label: "Brunch", accent: "#9dae6d" },
+                  { label: "Office Fit", accent: "#bcc597" },
                 ].map((card) => (
                   <div
                     key={card.label}
@@ -193,7 +193,7 @@ function Home() {
                       <div className="text-sm font-semibold">{card.label}</div>
                       <div className="text-xs text-gray-500">3 outfit options</div>
                     </div>
-                    <div className="ml-auto text-xs font-medium text-[#ff3b5c]">
+                    <div className="ml-auto text-xs font-medium text-[#8a9a5b]">
                       VIEW →
                     </div>
                   </div>
@@ -212,10 +212,10 @@ function Home() {
               </div>
               <div className="mt-8 flex items-center gap-4 rounded-xl border border-white/5 bg-[#111] p-5">
                 <div className="flex -space-x-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ff3b5c]/20 text-sm font-bold text-[#ff3b5c] ring-2 ring-[#0a0a0b]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#8a9a5b]/20 text-sm font-bold text-[#8a9a5b] ring-2 ring-[#0a0a0b]">
                     Y
                   </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ff6b81]/20 text-sm font-bold text-[#ff6b81] ring-2 ring-[#0a0a0b]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#9dae6d]/20 text-sm font-bold text-[#9dae6d] ring-2 ring-[#0a0a0b]">
                     T
                   </div>
                 </div>
@@ -236,7 +236,7 @@ function Home() {
                 </p>
               </div>
               <div className="mt-8 flex gap-3">
-                <div className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 px-4 py-3 text-sm font-semibold text-white">
+                <div className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#8a9a5b] to-[#9dae6d] px-4 py-3 text-sm font-semibold text-white">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.5 12.5c-.667.667-1.5 1-2.5 1-.8 0-1.55-.267-2.25-.8A4.23 4.23 0 0110.5 13c-.433.3-.95.5-1.5.5-1 0-1.833-.333-2.5-1-.667-.667-1-1.5-1-2.5s.333-1.833 1-2.5C7.167 6.833 8 6.5 9 6.5s1.833.333 2.5 1c.667.667 1 1.5 1 2.5 0 .8-.267 1.55-.8 2.25.533.433 1.117.7 1.75.8L14.5 11h1l.5 3.5z" />
                   </svg>
@@ -262,7 +262,7 @@ function Home() {
         <div className="relative mx-auto max-w-2xl overflow-hidden rounded-3xl border border-white/5 bg-white/[0.02] px-8 py-16 text-center sm:px-16 sm:py-20">
           {/* Inner glow */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden">
-            <div className="absolute -bottom-20 left-1/2 h-[300px] w-[300px] -translate-x-1/2 rounded-full bg-[#ff3b5c] opacity-[0.06] blur-[100px]" />
+            <div className="absolute -bottom-20 left-1/2 h-[300px] w-[300px] -translate-x-1/2 rounded-full bg-[#8a9a5b] opacity-[0.06] blur-[100px]" />
           </div>
 
           <div className="relative">
@@ -281,11 +281,11 @@ function Home() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
-                className="flex-1 rounded-xl border border-white/10 bg-white/5 px-5 py-4 text-white placeholder-gray-500 outline-none transition focus:border-[#ff3b5c]/50 focus:ring-2 focus:ring-[#ff3b5c]/20"
+                className="flex-1 rounded-xl border border-white/10 bg-white/5 px-5 py-4 text-white placeholder-gray-500 outline-none transition focus:border-[#8a9a5b]/50 focus:ring-2 focus:ring-[#8a9a5b]/20"
               />
               <button
                 type="submit"
-                className="rounded-xl bg-[#ff3b5c] px-8 py-4 font-semibold text-white transition hover:bg-[#e63450] hover:shadow-[0_0_30px_rgba(255,59,92,0.3)]"
+                className="rounded-xl bg-[#8a9a5b] px-8 py-4 font-semibold text-white transition hover:bg-[#6b7a4a] hover:shadow-[0_0_30px_rgba(138,154,91,0.3)]"
               >
                 Notify Me
               </button>
@@ -302,7 +302,7 @@ function Home() {
       <footer className="border-t border-white/5 px-6 py-12">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 sm:flex-row">
           <div className="flex items-center gap-2 text-lg font-extrabold tracking-tight">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#ff3b5c] text-xs font-black text-white">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#8a9a5b] text-xs font-black text-white">
               F
             </span>
             FitCheck

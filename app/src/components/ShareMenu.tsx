@@ -33,11 +33,6 @@ function isMobileDevice(): boolean {
   return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
-/** Check if Instagram Stories URL scheme is available */
-function canOpenInstagram(): boolean {
-  return typeof window !== "undefined" && "instagram-stories" in window;
-}
-
 /** Generate a ready-to-post caption for the outfit */
 function generateShareCaption(outfit: OutfitSuggestion): string {
   const occasion = outfit.occasion.charAt(0).toUpperCase() + outfit.occasion.slice(1);
