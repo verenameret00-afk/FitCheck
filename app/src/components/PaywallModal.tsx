@@ -60,15 +60,19 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
           </li>
           <li>
             <span className="paywall-check">✓</span>
-            <span>Organize your entire closet</span>
+            <span>Full Community access — share outfits, get inspired</span>
+          </li>
+          <li>
+            <span className="paywall-check">✓</span>
+            <span>Send looks to your Style Twins</span>
+          </li>
+          <li>
+            <span className="paywall-check">✓</span>
+            <span>Closet organization tools</span>
           </li>
           <li>
             <span className="paywall-check">✓</span>
             <span>"Complete the look" shopping recommendations</span>
-          </li>
-          <li>
-            <span className="paywall-check">✓</span>
-            <span>Early access to new features</span>
           </li>
         </ul>
 

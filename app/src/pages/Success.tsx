@@ -88,12 +88,15 @@ export default function Success() {
             <div className="success-badge">🎉</div>
             <h2 className="success-heading">You're Premium!</h2>
             <p className="success-desc">
-              Unlimited outfit generations, closet organization, and shopping
-              recommendations are now unlocked.
+              Unlimited outfit generations, full Community access, Style Twin
+              sharing, closet organization, and shopping recommendations are now
+              unlocked.
             </p>
             <div className="success-features">
               <span className="success-feature">✨ Unlimited outfits</span>
-              <span className="success-feature">👗 Full closet tools</span>
+              <span className="success-feature">💬 Full Community</span>
+              <span className="success-feature">👯 Send to Twins</span>
+              <span className="success-feature">👗 Closet tools</span>
               <span className="success-feature">🛍️ Shopping recs</span>
             </div>
             <button

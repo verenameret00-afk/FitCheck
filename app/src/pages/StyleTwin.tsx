@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { useCloset } from "../contexts/ClosetContext";
 import { generateStyleProfile, type StyleProfile, type StylePersona } from "../lib/styleProfile";
+import { isPremium } from "../lib/usage";
+
+const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/00w28r9JDdoW76z1kAbMQ01";
 
 interface TwinMatch {
   id: string;
@@ -64,6 +67,7 @@ export default function StyleTwin() {
   const [matches, setMatches] = useState<TwinMatch[]>([]);
   const [hasMatched, setHasMatched] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [showSwapPaywall, setShowSwapPaywall] = useState(false);
 
   useEffect(() => {
     if (items.length > 0) {
@@ -113,6 +117,14 @@ export default function StyleTwin() {
       handleCopyLink();
     }
   }, [handleCopyLink]);
+
+  const handleSwapIdeas = useCallback((matchName: string) => {
+    if (isPremium()) {
+      setToast(`💫 Swap request sent to ${matchName}! (demo)`);
+    } else {
+      setShowSwapPaywall(true);
+    }
+  }, []);
 
   const persona = profile?.persona;
 
@@ -232,9 +244,7 @@ export default function StyleTwin() {
                 </div>
                 <button
                   className="styletwin-swap-btn"
-                  onClick={() =>
-                    setToast(`💫 Swap request sent to ${match.name}! (demo)`)
-                  }
+                  onClick={() => handleSwapIdeas(match.name)}
                 >
                   <span>🔄</span>
                   <span>Swap Ideas</span>
@@ -266,6 +276,45 @@ export default function StyleTwin() {
           </button>
         </div>
       </div>
+
+      {/* Mini Paywall — Swap Ideas (free users) */}
+      {showSwapPaywall && (
+        <>
+          <div
+            className="paywall-backdrop"
+            onClick={() => setShowSwapPaywall(false)}
+          />
+          <div className="paywall-modal paywall-modal--mini">
+            <button
+              className="paywall-close"
+              onClick={() => setShowSwapPaywall(false)}
+              aria-label="Close"
+            >
+              ✕
+            </button>
+            <div className="paywall-icon">🔄</div>
+            <h2 className="paywall-heading">Premium Feature</h2>
+            <p className="paywall-body">
+              Swap Ideas with your Style Twins is a Premium feature. Upgrade to
+              unlock.
+            </p>
+            <a
+              className="paywall-cta"
+              href={STRIPE_PAYMENT_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Upgrade — $29.99
+            </a>
+            <button
+              className="paywall-dismiss"
+              onClick={() => setShowSwapPaywall(false)}
+            >
+              Maybe later
+            </button>
+          </div>
+        </>
+      )}
 
       {/* Toast */}
       {toast && <div className="share-toast">{toast}</div>}

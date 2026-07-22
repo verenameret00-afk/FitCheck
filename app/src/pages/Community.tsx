@@ -1,8 +1,46 @@
 import { useState, useCallback, useRef } from "react";
 import { DEMO_POSTS, type CommunityPost } from "../lib/communityData";
 import LookbookCard, { type LookbookCardHandle } from "../components/LookbookCard";
+import { isPremium } from "../lib/usage";
+
+const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/00w28r9JDdoW76z1kAbMQ01";
 
 export default function Community() {
+  const premium = isPremium();
+
+  // ── Free user: premium upsell page ──
+  if (!premium) {
+    return (
+      <div className="page community-upsell-page">
+        <div className="community-upsell-card">
+          <div className="community-upsell-icon">💬</div>
+          <h2 className="community-upsell-heading">
+            Community is a Premium Feature
+          </h2>
+          <p className="community-upsell-body">
+            Connect with your Style Twins, share outfits, and get inspired.
+            Upgrade to unlock.
+          </p>
+          <a
+            className="paywall-cta"
+            href={STRIPE_PAYMENT_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Upgrade — $29.99
+          </a>
+          <p className="community-upsell-hint">
+            Already paid?{" "}
+            <a href="/success" className="profile-complete-link">
+              Complete your upgrade →
+            </a>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Premium user: full community feed ──
   const [posts, setPosts] = useState<CommunityPost[]>(DEMO_POSTS);
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());

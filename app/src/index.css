@@ -3143,3 +3143,76 @@ h1, h2, h3, h4, h5, h6,
 .profile-complete-link:hover {
   color: var(--accent);
 }
+
+/* ════════════════════════════════════════
+   Community Upsell Page (free users)
+   ════════════════════════════════════════ */
+.community-upsell-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100dvh - var(--nav-height) - 120px);
+}
+
+.community-upsell-card {
+  text-align: center;
+  max-width: 360px;
+  padding: 36px 28px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+.community-upsell-icon {
+  font-size: 3rem;
+  margin-bottom: 14px;
+  filter: drop-shadow(0 0 12px rgba(92, 107, 60, 0.12));
+}
+
+.community-upsell-heading {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.community-upsell-body {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: 22px;
+  max-width: 280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.community-upsell-card .paywall-cta {
+  margin-bottom: 12px;
+}
+
+.community-upsell-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ════════════════════════════════════════
+   Mini Paywall (ShareMenu / StyleTwin)
+   ════════════════════════════════════════ */
+.paywall-modal--mini {
+  padding: 32px 24px 24px;
+  max-width: 340px;
+}
+
+.paywall-body {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 20px;
+  max-width: 260px;
+  margin-left: auto;
+  margin-right: auto;
+}

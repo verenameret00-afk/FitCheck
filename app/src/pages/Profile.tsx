@@ -211,7 +211,7 @@ export default function Profile() {
               </h4>
               <p className="profile-subscription-desc">
                 {premium
-                  ? "Unlimited styling, closet organization, and shopping recommendations."
+                  ? "Unlimited outfit generations, full Community access, Style Twin sharing, closet organization, and shopping recommendations."
                   : "4 outfit generations per week."}
               </p>
             </div>

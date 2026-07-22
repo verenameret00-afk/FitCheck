@@ -1,6 +1,9 @@
 import { useState, useCallback, useEffect } from "react";
 import type { OutfitSuggestion } from "../lib/outfits";
 import SendToTwinModal from "./SendToTwinModal";
+import { isPremium } from "../lib/usage";
+
+const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/00w28r9JDdoW76z1kAbMQ01";
 
 export interface ShareMenuProps {
   isOpen: boolean;
@@ -81,6 +84,7 @@ export default function ShareMenu({
   const [isExporting, setIsExporting] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [showTwinModal, setShowTwinModal] = useState(false);
+  const [showTwinPaywall, setShowTwinPaywall] = useState(false);
   const isMobile = isMobileDevice();
 
   // Clear toast after 2s
@@ -179,7 +183,11 @@ export default function ShareMenu({
   }, [exportAndGetPng, isMobile, outfit, onClose]);
 
   const handleStyleTwin = useCallback(() => {
-    setShowTwinModal(true);
+    if (isPremium()) {
+      setShowTwinModal(true);
+    } else {
+      setShowTwinPaywall(true);
+    }
   }, []);
 
   const handleDownload = useCallback(async () => {
@@ -333,6 +341,44 @@ export default function ShareMenu({
         onClose={() => setShowTwinModal(false)}
         outfitName={outfit.name}
       />
+
+      {/* Mini Paywall — Send to Style Twin (free users) */}
+      {showTwinPaywall && (
+        <>
+          <div
+            className="paywall-backdrop"
+            onClick={() => setShowTwinPaywall(false)}
+          />
+          <div className="paywall-modal paywall-modal--mini">
+            <button
+              className="paywall-close"
+              onClick={() => setShowTwinPaywall(false)}
+              aria-label="Close"
+            >
+              ✕
+            </button>
+            <div className="paywall-icon">👯</div>
+            <h2 className="paywall-heading">Premium Feature</h2>
+            <p className="paywall-body">
+              Send to Style Twin is a Premium feature. Upgrade to unlock.
+            </p>
+            <a
+              className="paywall-cta"
+              href={STRIPE_PAYMENT_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Upgrade — $29.99
+            </a>
+            <button
+              className="paywall-dismiss"
+              onClick={() => setShowTwinPaywall(false)}
+            >
+              Maybe later
+            </button>
+          </div>
+        </>
+      )}
 
       {/* Toast */}
       {toast && <div className="share-toast">{toast}</div>}
